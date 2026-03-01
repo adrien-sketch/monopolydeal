@@ -1,0 +1,333 @@
+/* Game board layout */
+.game-board {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  height: 100vh;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--gap-md);
+  gap: var(--gap-md);
+}
+
+/* Opponent area (top) */
+.opponent-area {
+  display: flex;
+  gap: var(--gap-lg);
+  align-items: flex-start;
+  padding: var(--gap-md);
+  background: rgba(27, 94, 32, 0.08);
+  border-radius: 12px;
+  border: 1px solid rgba(27, 94, 32, 0.15);
+}
+
+.opponent-area__hand {
+  display: flex;
+  gap: -20px;
+}
+
+.opponent-area__hand .card {
+  margin-left: -20px;
+}
+
+.opponent-area__hand .card:first-child {
+  margin-left: 0;
+}
+
+/* Middle area */
+.middle-area {
+  display: flex;
+  gap: var(--gap-lg);
+  align-items: stretch;
+}
+
+.middle-area__center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap-md);
+  padding: var(--gap-md);
+}
+
+.middle-area__piles {
+  display: flex;
+  gap: var(--gap-lg);
+  align-items: center;
+}
+
+/* Player area (bottom) */
+.player-area {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+  padding: var(--gap-md);
+  background: rgba(27, 94, 32, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(27, 94, 32, 0.1);
+}
+
+/* Hand */
+.hand {
+  display: flex;
+  justify-content: center;
+  gap: var(--gap-sm);
+  flex-wrap: wrap;
+  padding: var(--gap-md) 0;
+}
+
+/* Property sets grid */
+.property-area {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-sm);
+  flex: 1;
+}
+
+.property-set {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--gap-sm);
+  border-radius: 6px;
+  background: rgba(0,0,0,0.03);
+  min-width: 70px;
+}
+
+.property-set__label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 2px 4px;
+  border-radius: 3px;
+  color: white;
+  text-align: center;
+}
+
+.property-set__cards {
+  display: flex;
+  flex-direction: column;
+  gap: -40px;
+}
+
+.property-set__cards .card--small {
+  margin-top: -40px;
+}
+
+.property-set__cards .card--small:first-child {
+  margin-top: 0;
+}
+
+.property-set__complete {
+  border: 2px solid var(--monopoly-gold);
+  background: rgba(255, 214, 0, 0.1);
+}
+
+.property-set__badge {
+  font-size: 0.55rem;
+  text-align: center;
+  color: #888;
+}
+
+/* Bank */
+.bank {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap-sm);
+  padding: var(--gap-sm);
+  min-width: 80px;
+}
+
+.bank__total {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--monopoly-green);
+}
+
+.bank__cards {
+  display: flex;
+  flex-direction: column;
+  gap: -60px;
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+.bank__cards .card--small {
+  margin-top: -60px;
+}
+
+.bank__cards .card--small:first-child {
+  margin-top: 0;
+}
+
+/* Turn controls */
+.turn-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap-lg);
+  padding: var(--gap-md);
+}
+
+.turn-controls__info {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.turn-controls__btn {
+  background: var(--monopoly-green);
+  color: white;
+  padding: 10px 24px;
+  font-size: 0.95rem;
+}
+
+.turn-controls__btn--danger {
+  background: var(--monopoly-red);
+}
+
+/* Action log */
+.action-log {
+  width: 250px;
+  max-height: 300px;
+  overflow-y: auto;
+  padding: var(--gap-md);
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  font-size: 0.75rem;
+}
+
+.action-log__title {
+  font-weight: 700;
+  font-size: 0.8rem;
+  margin-bottom: var(--gap-sm);
+  color: var(--monopoly-green);
+}
+
+.action-log__entry {
+  padding: 3px 0;
+  border-bottom: 1px solid #f0f0f0;
+  line-height: 1.3;
+}
+
+.action-log__entry--bot {
+  color: var(--monopoly-red);
+}
+
+.action-log__entry--human {
+  color: var(--monopoly-blue);
+}
+
+/* Draw pile */
+.draw-pile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--gap-sm);
+}
+
+.draw-pile__count {
+  font-size: 0.75rem;
+  color: #666;
+  font-weight: 600;
+}
+
+/* Modal overlay */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.modal {
+  background: white;
+  border-radius: 12px;
+  padding: var(--gap-xl);
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+.modal__title {
+  font-family: Georgia, serif;
+  font-size: 1.3rem;
+  color: var(--monopoly-green);
+  margin-bottom: var(--gap-lg);
+}
+
+.modal__actions {
+  display: flex;
+  gap: var(--gap-md);
+  justify-content: flex-end;
+  margin-top: var(--gap-lg);
+}
+
+.modal__btn {
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.modal__btn--primary {
+  background: var(--monopoly-green);
+  color: white;
+}
+
+.modal__btn--secondary {
+  background: #e0e0e0;
+  color: #333;
+}
+
+.modal__btn--danger {
+  background: var(--monopoly-red);
+  color: white;
+}
+
+/* Selectable items in modals */
+.selectable-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-md);
+  justify-content: center;
+}
+
+/* Start and win screens */
+.screen-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  gap: var(--gap-xl);
+  text-align: center;
+}
+
+.screen-center__title {
+  font-family: Georgia, serif;
+  font-size: 3rem;
+  color: var(--monopoly-green);
+}
+
+.screen-center__subtitle {
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.screen-center__btn {
+  background: var(--monopoly-green);
+  color: white;
+  padding: 14px 40px;
+  font-size: 1.1rem;
+  border-radius: 8px;
+}
+
+.screen-center__title--lose {
+  color: var(--monopoly-red);
+}

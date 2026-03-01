@@ -1,0 +1,42 @@
+import type { PropertyColor } from '../game/types'
+import { COLOR_NAMES } from '../game/constants'
+
+interface ColorPickerModalProps {
+  colors: PropertyColor[]
+  title: string
+  onSelect: (color: PropertyColor) => void
+}
+
+export function ColorPickerModal({ colors, title, onSelect }: ColorPickerModalProps) {
+  return (
+    <div className="modal-overlay">
+      <div className="modal">
+        <h3 className="modal__title">{title}</h3>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center' }}>
+          {colors.map(color => (
+            <button
+              key={color}
+              className="modal__btn"
+              style={{
+                background: `var(--color-${cssColorVar(color)})`,
+                color: ['yellow', 'lightBlue'].includes(color) ? '#333' : 'white',
+                minWidth: '100px',
+              }}
+              onClick={() => onSelect(color)}
+            >
+              {COLOR_NAMES[color]}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function cssColorVar(color: PropertyColor): string {
+  const map: Record<string, string> = {
+    lightBlue: 'light-blue',
+    darkBlue: 'dark-blue',
+  }
+  return map[color] || color
+}

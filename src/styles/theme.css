@@ -1,0 +1,39 @@
+:root {
+  /* Monopoly brand colors */
+  --monopoly-green: #1B5E20;
+  --monopoly-red: #D32F2F;
+  --monopoly-blue: #1A237E;
+  --monopoly-cream: #FFF8E1;
+  --monopoly-gold: #FFD600;
+  --monopoly-dark: #1A1A1A;
+
+  /* Property colors */
+  --color-brown: #8B4513;
+  --color-light-blue: #87CEEB;
+  --color-pink: #D81B60;
+  --color-orange: #F57C00;
+  --color-red: #D32F2F;
+  --color-yellow: #FDD835;
+  --color-green: #388E3C;
+  --color-dark-blue: #1565C0;
+  --color-railroad: #424242;
+  --color-utility: #78909C;
+
+  /* UI */
+  --color-bg: var(--monopoly-cream);
+  --color-text: var(--monopoly-dark);
+  --color-text-light: #F5F0E1;
+  --color-card-back: var(--monopoly-green);
+  --color-board: #C8E6C9;
+
+  /* Card */
+  --card-width: 90px;
+  --card-height: 130px;
+  --card-radius: 8px;
+
+  /* Spacing */
+  --gap-sm: 4px;
+  --gap-md: 8px;
+  --gap-lg: 16px;
+  --gap-xl: 24px;
+}

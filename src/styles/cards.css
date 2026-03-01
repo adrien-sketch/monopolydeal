@@ -1,0 +1,130 @@
+/* Card component styles */
+.card {
+  width: var(--card-width);
+  height: var(--card-height);
+  border-radius: var(--card-radius);
+  border: 2px solid #ccc;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.card:hover:not(.card--disabled):not(.card--face-down) {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  z-index: 10;
+}
+
+.card--selected {
+  transform: translateY(-12px) !important;
+  box-shadow: 0 0 0 3px var(--monopoly-gold), 0 8px 16px rgba(0,0,0,0.3) !important;
+}
+
+.card--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.card--face-down {
+  background: var(--color-card-back);
+  border-color: #0d3d12;
+  cursor: default;
+}
+
+.card--face-down .card__inner {
+  display: none;
+}
+
+.card--face-down::after {
+  content: 'M';
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--monopoly-gold);
+  font-family: Georgia, serif;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.card__header {
+  padding: 3px 6px;
+  color: white;
+  font-weight: 700;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.card__body {
+  flex: 1;
+  padding: 4px 6px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.card__name {
+  font-weight: 600;
+  font-size: 0.65rem;
+  line-height: 1.2;
+  margin-bottom: 2px;
+}
+
+.card__value {
+  position: absolute;
+  bottom: 4px;
+  right: 6px;
+  font-weight: 700;
+  font-size: 0.7rem;
+  color: #666;
+}
+
+.card__icon {
+  font-size: 1.4rem;
+  margin-bottom: 2px;
+}
+
+/* Property card colors */
+.card--color-brown .card__header { background: var(--color-brown); }
+.card--color-lightBlue .card__header { background: var(--color-light-blue); color: #333; }
+.card--color-pink .card__header { background: var(--color-pink); }
+.card--color-orange .card__header { background: var(--color-orange); }
+.card--color-red .card__header { background: var(--color-red); }
+.card--color-yellow .card__header { background: var(--color-yellow); color: #333; }
+.card--color-green .card__header { background: var(--color-green); }
+.card--color-darkBlue .card__header { background: var(--color-dark-blue); }
+.card--color-railroad .card__header { background: var(--color-railroad); }
+.card--color-utility .card__header { background: var(--color-utility); }
+
+/* Money cards */
+.card--money .card__header { background: #4CAF50; }
+.card--money .card__icon { color: #4CAF50; }
+
+/* Action cards */
+.card--action .card__header { background: var(--monopoly-blue); }
+
+/* Rent cards */
+.card--rent .card__header { background: #E91E63; }
+
+/* Wildcard */
+.card--wildcard .card__header {
+  background: linear-gradient(90deg, var(--color-red), var(--color-yellow), var(--color-green), var(--color-dark-blue));
+}
+
+/* Small card variant for compact areas */
+.card--small {
+  width: 60px;
+  height: 85px;
+  font-size: 0.55rem;
+}
+.card--small .card__icon { font-size: 1rem; }
+.card--small .card__name { font-size: 0.5rem; }
