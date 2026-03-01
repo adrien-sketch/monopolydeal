@@ -18,14 +18,9 @@ import '../styles/layout.css'
 
 export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }) {
   const { state, dispatch } = useGame()
-  const botTimerRef = useRef<number | null>(null)
-
-  // Clean up bot timer on unmount
-  useEffect(() => {
-    return () => {
-      if (botTimerRef.current) clearTimeout(botTimerRef.current)
-    }
-  }, [])
+  const botBusy = useRef(false)
+  const stateRef = useRef(state)
+  stateRef.current = state
 
   // Check for game over
   useEffect(() => {
@@ -35,107 +30,138 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
     }
   }, [state.winner, onGameOver])
 
-  // Bot auto-draw
+  // Single bot effect: handles all bot decisions
   useEffect(() => {
-    if (state.currentPlayer !== 'bot' || state.turnPhase !== 'draw' || state.winner) return
-    botTimerRef.current = window.setTimeout(() => dispatch({ type: 'DRAW_CARDS' }), 600)
-    return () => { if (botTimerRef.current) clearTimeout(botTimerRef.current) }
-  }, [state.currentPlayer, state.turnPhase, state.winner, dispatch])
+    if (state.winner) return
+    if (botBusy.current) return
 
-  // Bot play phase
-  useEffect(() => {
-    if (state.currentPlayer !== 'bot' || state.turnPhase !== 'play' || state.winner) return
-    const actions = computeBotTurn(state)
-    if (actions.length === 0) {
-      botTimerRef.current = window.setTimeout(() => dispatch({ type: 'END_TURN' }), 600)
-      return () => { if (botTimerRef.current) clearTimeout(botTimerRef.current) }
+    // Bot draw phase
+    if (state.currentPlayer === 'bot' && state.turnPhase === 'draw') {
+      botBusy.current = true
+      const t = setTimeout(() => {
+        botBusy.current = false
+        dispatch({ type: 'DRAW_CARDS' })
+      }, 600)
+      return () => { clearTimeout(t); botBusy.current = false }
     }
 
-    let delay = 800
-    const timers: number[] = []
-    for (const action of actions) {
-      timers.push(window.setTimeout(() => dispatch(action), delay))
-      delay += 1000
-    }
-    timers.push(window.setTimeout(() => dispatch({ type: 'END_TURN' }), delay))
-    return () => timers.forEach(clearTimeout)
-  }, [state.currentPlayer, state.turnPhase, state.cardsPlayedThisTurn, state.winner, dispatch])
-
-  // Bot responds to Just Say No prompts
-  useEffect(() => {
-    if (!state.pendingAction || state.pendingAction.type !== 'justSayNo') return
-    const jsn = state.pendingAction
-    const responder = jsn.depth % 2 === 0 ? jsn.target : jsn.challenger
-    if (responder !== 'bot') return
-
-    botTimerRef.current = window.setTimeout(() => {
-      if (shouldBotPlayJustSayNo(state)) {
-        dispatch({ type: 'PLAY_JUST_SAY_NO' })
-      } else {
-        dispatch({ type: 'ACCEPT_ACTION' })
+    // Bot play phase
+    if (state.currentPlayer === 'bot' && state.turnPhase === 'play') {
+      botBusy.current = true
+      const actions = computeBotTurn(state)
+      if (actions.length === 0) {
+        const t = setTimeout(() => {
+          botBusy.current = false
+          dispatch({ type: 'END_TURN' })
+        }, 600)
+        return () => { clearTimeout(t); botBusy.current = false }
       }
-    }, 1000)
-    return () => { if (botTimerRef.current) clearTimeout(botTimerRef.current) }
-  }, [state.pendingAction, dispatch])
+      // Play first action only, let state update trigger next
+      const t = setTimeout(() => {
+        botBusy.current = false
+        dispatch(actions[0])
+      }, 800)
+      return () => { clearTimeout(t); botBusy.current = false }
+    }
 
-  // Bot auto-pay debts
-  useEffect(() => {
-    if (!state.pendingAction || state.pendingAction.type !== 'payDebt') return
-    if (state.pendingAction.debtor !== 'bot') return
+    // Bot responds to Just Say No
+    if (state.pendingAction?.type === 'justSayNo') {
+      const jsn = state.pendingAction
+      const responder = jsn.depth % 2 === 0 ? jsn.target : jsn.challenger
+      if (responder === 'bot') {
+        botBusy.current = true
+        const t = setTimeout(() => {
+          botBusy.current = false
+          if (shouldBotPlayJustSayNo(stateRef.current)) {
+            dispatch({ type: 'PLAY_JUST_SAY_NO' })
+          } else {
+            dispatch({ type: 'ACCEPT_ACTION' })
+          }
+        }, 1000)
+        return () => { clearTimeout(t); botBusy.current = false }
+      }
+    }
 
-    const payments = chooseBotPayment(state.players.bot, state.pendingAction.amount)
-    botTimerRef.current = window.setTimeout(() => {
-      dispatch({ type: 'PAY_DEBT', payments })
-    }, 800)
-    return () => { if (botTimerRef.current) clearTimeout(botTimerRef.current) }
-  }, [state.pendingAction, dispatch])
+    // Bot pays debt
+    if (state.pendingAction?.type === 'payDebt' && state.pendingAction.debtor === 'bot') {
+      botBusy.current = true
+      const payments = chooseBotPayment(state.players.bot, state.pendingAction.amount)
+      const t = setTimeout(() => {
+        botBusy.current = false
+        dispatch({ type: 'PAY_DEBT', payments })
+      }, 800)
+      return () => { clearTimeout(t); botBusy.current = false }
+    }
 
-  // Bot selects property for steal
-  useEffect(() => {
-    if (!state.pendingAction) return
-    if (state.pendingAction.type === 'selectProperty' && state.pendingAction.player === 'bot') {
+    // Bot selects property (Sly Deal / Forced Deal)
+    if (state.pendingAction?.type === 'selectProperty' && state.pendingAction.player === 'bot') {
+      botBusy.current = true
       const result = botSelectPropertyToSteal(state)
       if (result) {
-        botTimerRef.current = window.setTimeout(() => {
+        const t = setTimeout(() => {
+          botBusy.current = false
           dispatch({ type: 'SELECT_PROPERTY', cardId: result.cardId })
         }, 800)
+        return () => { clearTimeout(t); botBusy.current = false }
       }
+      botBusy.current = false
     }
-    if (state.pendingAction.type === 'selectOwnProperty' && state.pendingAction.player === 'bot') {
+
+    // Bot gives property (Forced Deal)
+    if (state.pendingAction?.type === 'selectOwnProperty' && state.pendingAction.player === 'bot') {
+      botBusy.current = true
       const result = botSelectPropertyToGive(state)
       if (result) {
-        botTimerRef.current = window.setTimeout(() => {
+        const t = setTimeout(() => {
+          botBusy.current = false
           dispatch({ type: 'SELECT_OWN_PROPERTY', cardId: result.cardId })
         }, 800)
+        return () => { clearTimeout(t); botBusy.current = false }
       }
+      botBusy.current = false
     }
-    if (state.pendingAction.type === 'selectSet' && state.pendingAction.player === 'bot') {
+
+    // Bot selects set (Deal Breaker)
+    if (state.pendingAction?.type === 'selectSet' && state.pendingAction.player === 'bot') {
+      botBusy.current = true
       const color = botSelectSetToSteal(state)
       if (color) {
-        botTimerRef.current = window.setTimeout(() => {
+        const t = setTimeout(() => {
+          botBusy.current = false
           dispatch({ type: 'SELECT_SET', color })
         }, 800)
+        return () => { clearTimeout(t); botBusy.current = false }
       }
+      botBusy.current = false
     }
-    return () => { if (botTimerRef.current) clearTimeout(botTimerRef.current) }
-  }, [state.pendingAction, dispatch])
 
-  // Bot discard
-  useEffect(() => {
-    if (!state.pendingAction || state.pendingAction.type !== 'discard') return
-    if (state.pendingAction.player !== 'bot') return
-    // Discard lowest value cards
-    const hand = [...state.players.bot.hand].sort((a, b) => a.bankValue - b.bankValue)
-    const toDiscard = hand.slice(0, state.pendingAction.mustDiscardCount).map(c => c.id)
-    botTimerRef.current = window.setTimeout(() => {
-      dispatch({ type: 'DISCARD_CARDS', cardIds: toDiscard })
-    }, 800)
-    return () => { if (botTimerRef.current) clearTimeout(botTimerRef.current) }
-  }, [state.pendingAction, dispatch])
+    // Bot discards
+    if (state.pendingAction?.type === 'discard' && state.pendingAction.player === 'bot') {
+      botBusy.current = true
+      const hand = [...state.players.bot.hand].sort((a, b) => a.bankValue - b.bankValue)
+      const toDiscard = hand.slice(0, state.pendingAction.mustDiscardCount).map(c => c.id)
+      const t = setTimeout(() => {
+        botBusy.current = false
+        dispatch({ type: 'DISCARD_CARDS', cardIds: toDiscard })
+      }, 800)
+      return () => { clearTimeout(t); botBusy.current = false }
+    }
+
+    // Bot end turn (after 3 cards played)
+    if (state.currentPlayer === 'bot' && state.turnPhase === 'play' && state.cardsPlayedThisTurn >= 3) {
+      botBusy.current = true
+      const t = setTimeout(() => {
+        botBusy.current = false
+        dispatch({ type: 'END_TURN' })
+      }, 600)
+      return () => { clearTimeout(t); botBusy.current = false }
+    }
+  }, [state, dispatch])
 
   const handleCardPlay = useCallback((card: CardType) => {
-    if (state.currentPlayer !== 'human' || state.turnPhase !== 'play' || state.cardsPlayedThisTurn >= 3) return
-    if (state.pendingAction) return
+    const s = stateRef.current
+    if (s.currentPlayer !== 'human' || s.turnPhase !== 'play' || s.cardsPlayedThisTurn >= 3) return
+    if (s.pendingAction) return
 
     if (card.type === 'money') {
       dispatch({ type: 'PLAY_CARD_AS_MONEY', cardId: card.id })
@@ -143,18 +169,15 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
       dispatch({ type: 'PLAY_PROPERTY', cardId: card.id, color: card.color! })
     } else if (card.type === 'action') {
       if (card.actionType === 'justSayNo' || card.actionType === 'doubleTheRent') {
-        // These are reactive — play as money
         dispatch({ type: 'PLAY_CARD_AS_MONEY', cardId: card.id })
       } else if (card.actionType === 'house' || card.actionType === 'hotel') {
-        // Need to select a color — dispatch directly if only one option
-        dispatch({ type: 'PLAY_CARD_AS_MONEY', cardId: card.id }) // Simplified — will enhance with modals
+        dispatch({ type: 'PLAY_CARD_AS_MONEY', cardId: card.id })
       } else {
         dispatch({ type: 'PLAY_ACTION', cardId: card.id })
       }
     } else if (card.type === 'rent') {
-      // Need color selection — for now pick first color with properties
       if (card.colors) {
-        const color = card.colors.find(c => state.players.human.properties[c].length > 0)
+        const color = card.colors.find(c => s.players.human.properties[c].length > 0)
         if (color) {
           dispatch({ type: 'PLAY_RENT', cardId: card.id, color, doubled: false })
         } else {
@@ -162,24 +185,24 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
         }
       }
     } else if (card.type === 'wildcard') {
-      // Need color selection
       if (card.colors && card.colors.length <= 2) {
         dispatch({ type: 'PLAY_PROPERTY', cardId: card.id, color: card.colors[0] })
       } else {
         dispatch({ type: 'PLAY_CARD_AS_MONEY', cardId: card.id })
       }
     }
-  }, [state, dispatch])
+  }, [dispatch])
 
   const handlePlayAsMoney = useCallback((card: CardType) => {
-    if (state.currentPlayer !== 'human' || state.turnPhase !== 'play' || state.cardsPlayedThisTurn >= 3) return
+    const s = stateRef.current
+    if (s.currentPlayer !== 'human' || s.turnPhase !== 'play' || s.cardsPlayedThisTurn >= 3) return
     dispatch({ type: 'PLAY_CARD_AS_MONEY', cardId: card.id })
-  }, [state, dispatch])
+  }, [dispatch])
 
   const isHumanTurn = state.currentPlayer === 'human'
   const canPlay = isHumanTurn && state.turnPhase === 'play' && state.cardsPlayedThisTurn < 3 && !state.pendingAction
 
-  // Modal states based on pending action
+  // Modal states
   const showPayment = state.pendingAction?.type === 'payDebt' && state.pendingAction.debtor === 'human'
   const showPropertyPicker = state.pendingAction?.type === 'selectProperty' && state.pendingAction.player === 'human'
   const showOwnPropertyPicker = state.pendingAction?.type === 'selectOwnProperty' && state.pendingAction.player === 'human'
@@ -288,7 +311,6 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
           onPay={(payments) => dispatch({ type: 'PAY_DEBT', payments })}
         />
       )}
-
       {showPropertyPicker && state.pendingAction?.type === 'selectProperty' && (
         <PropertyPickerModal
           targetPlayer={state.players[state.pendingAction.targetPlayer]}
@@ -296,7 +318,6 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
           onSelect={(cardId) => dispatch({ type: 'SELECT_PROPERTY', cardId })}
         />
       )}
-
       {showOwnPropertyPicker && (
         <PropertyPickerModal
           targetPlayer={state.players.human}
@@ -305,14 +326,12 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
           title="Choisissez une propriété à donner"
         />
       )}
-
       {showSetPicker && state.pendingAction?.type === 'selectSet' && (
         <SetPickerModal
           targetPlayer={state.players[state.pendingAction.targetPlayer]}
           onSelect={(color) => dispatch({ type: 'SELECT_SET', color })}
         />
       )}
-
       {showJustSayNo && (
         <JustSayNoModal
           hasCard={state.players.human.hand.some(c => c.actionType === 'justSayNo')}
@@ -320,7 +339,6 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
           onAccept={() => dispatch({ type: 'ACCEPT_ACTION' })}
         />
       )}
-
       {showDiscard && state.pendingAction?.type === 'discard' && (
         <DiscardModal
           hand={state.players.human.hand}
@@ -328,7 +346,6 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
           onDiscard={(cardIds) => dispatch({ type: 'DISCARD_CARDS', cardIds })}
         />
       )}
-
       {state.winner && (
         <div className="modal-overlay">
           <div className="modal" style={{ textAlign: 'center' }}>
