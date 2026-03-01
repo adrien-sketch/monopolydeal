@@ -30,7 +30,7 @@ function App() {
     return (
       <div className="screen-center">
         <h1 className="screen-center__title">Monopoly Deal</h1>
-        <p className="screen-center__subtitle">1v1 contre le Bot</p>
+        <p className="screen-center__subtitle">Version FR - Refonte visuelle</p>
         <button className="screen-center__btn" onClick={handleStartGame}>
           Jouer
         </button>
