@@ -1,6 +1,6 @@
-import { useEffect, useRef, useCallback } from 'react'
+import { useEffect, useRef, useCallback, useState } from 'react'
 import { useGame } from '../state/context'
-import type { Card as CardType } from '../game/types'
+import type { Card as CardType, PropertyColor } from '../game/types'
 import { Card } from './Card'
 import { PlayerArea } from './PlayerArea'
 import { ActionLog } from './ActionLog'
@@ -9,6 +9,7 @@ import { PropertyPickerModal } from './PropertyPickerModal'
 import { SetPickerModal } from './SetPickerModal'
 import { JustSayNoModal } from './JustSayNoModal'
 import { DiscardModal } from './DiscardModal'
+import { ColorPickerModal } from './ColorPickerModal'
 import {
   computeBotTurn, shouldBotPlayJustSayNo, botSelectPropertyToSteal,
   botSelectSetToSteal, botSelectPropertyToGive,
@@ -16,11 +17,16 @@ import {
 import { chooseBotPayment } from '../game/payment'
 import '../styles/layout.css'
 
+type ColorPickerContext =
+  | { purpose: 'wildcard'; cardId: string; colors: PropertyColor[] }
+  | { purpose: 'rent'; cardId: string; colors: PropertyColor[] }
+
 export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }) {
   const { state, dispatch } = useGame()
   const botBusy = useRef(false)
   const stateRef = useRef(state)
   stateRef.current = state
+  const [colorPicker, setColorPicker] = useState<ColorPickerContext | null>(null)
 
   // Check for game over
   useEffect(() => {
@@ -177,21 +183,36 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
       }
     } else if (card.type === 'rent') {
       if (card.colors) {
-        const color = card.colors.find(c => s.players.human.properties[c].length > 0)
-        if (color) {
-          dispatch({ type: 'PLAY_RENT', cardId: card.id, color, doubled: false })
-        } else {
+        // Only show colors where the player actually has properties
+        const validColors = card.colors.filter(c => s.players.human.properties[c].length > 0)
+        if (validColors.length === 0) {
           dispatch({ type: 'PLAY_CARD_AS_MONEY', cardId: card.id })
+        } else if (validColors.length === 1) {
+          dispatch({ type: 'PLAY_RENT', cardId: card.id, color: validColors[0], doubled: false })
+        } else {
+          setColorPicker({ purpose: 'rent', cardId: card.id, colors: validColors })
         }
       }
     } else if (card.type === 'wildcard') {
-      if (card.colors && card.colors.length <= 2) {
-        dispatch({ type: 'PLAY_PROPERTY', cardId: card.id, color: card.colors[0] })
-      } else {
-        dispatch({ type: 'PLAY_CARD_AS_MONEY', cardId: card.id })
+      if (card.colors && card.colors.length > 0) {
+        if (card.colors.length === 1) {
+          dispatch({ type: 'PLAY_PROPERTY', cardId: card.id, color: card.colors[0] })
+        } else {
+          setColorPicker({ purpose: 'wildcard', cardId: card.id, colors: card.colors })
+        }
       }
     }
   }, [dispatch])
+
+  const handleColorSelected = useCallback((color: PropertyColor) => {
+    if (!colorPicker) return
+    if (colorPicker.purpose === 'wildcard') {
+      dispatch({ type: 'PLAY_PROPERTY', cardId: colorPicker.cardId, color })
+    } else {
+      dispatch({ type: 'PLAY_RENT', cardId: colorPicker.cardId, color, doubled: false })
+    }
+    setColorPicker(null)
+  }, [colorPicker, dispatch])
 
   const handlePlayAsMoney = useCallback((card: CardType) => {
     const s = stateRef.current
@@ -344,6 +365,13 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
           hand={state.players.human.hand}
           mustDiscard={state.pendingAction.mustDiscardCount}
           onDiscard={(cardIds) => dispatch({ type: 'DISCARD_CARDS', cardIds })}
+        />
+      )}
+      {colorPicker && (
+        <ColorPickerModal
+          colors={colorPicker.colors}
+          title={colorPicker.purpose === 'wildcard' ? 'Choisissez la couleur du Joker' : 'Choisissez la couleur du Loyer'}
+          onSelect={handleColorSelected}
         />
       )}
       {state.winner && (
