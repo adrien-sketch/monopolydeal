@@ -8,7 +8,7 @@ function App() {
 
   return (
     <div>
-      <h1>My App</h1>
+      <h1>Monopoly Deal</h1>
       <FeedbackButton onSubmit={handleFeedback} />
     </div>
   )
