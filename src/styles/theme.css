@@ -27,9 +27,9 @@
   --color-board: #C8E6C9;
 
   /* Card */
-  --card-width: 90px;
-  --card-height: 130px;
-  --card-radius: 8px;
+  --card-width: 120px;
+  --card-height: 175px;
+  --card-radius: 10px;
 
   /* Spacing */
   --gap-sm: 4px;
