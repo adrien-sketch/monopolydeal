@@ -135,8 +135,8 @@ describe('botSelectSetToSteal', () => {
     const state = makeBotTurnState()
     state.players.human.properties.brown = [prop('a', 'brown'), prop('b', 'brown')]
     state.players.human.properties.darkBlue = [
-      { id: 'db0', type: 'property', name: 'Park Place', bankValue: 4, color: 'darkBlue' },
-      { id: 'db1', type: 'property', name: 'Boardwalk', bankValue: 4, color: 'darkBlue' },
+      { id: 'db0', type: 'property', name: 'Avenue des Champs-Élysées', bankValue: 4, color: 'darkBlue' },
+      { id: 'db1', type: 'property', name: 'Rue de la Paix', bankValue: 4, color: 'darkBlue' },
     ]
     const result = botSelectSetToSteal(state)
     expect(result).toBe('darkBlue') // darkBlue rent (8) > brown rent (2)

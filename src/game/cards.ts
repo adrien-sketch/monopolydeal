@@ -30,44 +30,44 @@ function createAllCards(): Card[] {
   const cards: Card[] = []
 
   // === PROPERTY CARDS (28) ===
-  // Brown (2)
-  cards.push(property('prop-brown-0', 'Mediterranean Avenue', 'brown', 1))
-  cards.push(property('prop-brown-1', 'Baltic Avenue', 'brown', 1))
-  // Light Blue (3)
-  cards.push(property('prop-lightBlue-0', 'Oriental Avenue', 'lightBlue', 1))
-  cards.push(property('prop-lightBlue-1', 'Vermont Avenue', 'lightBlue', 1))
-  cards.push(property('prop-lightBlue-2', 'Connecticut Avenue', 'lightBlue', 1))
-  // Pink (3)
-  cards.push(property('prop-pink-0', 'St. Charles Place', 'pink', 2))
-  cards.push(property('prop-pink-1', 'States Avenue', 'pink', 2))
-  cards.push(property('prop-pink-2', 'Virginia Avenue', 'pink', 2))
+  // Brown (2) — Marron
+  cards.push(property('prop-brown-0', 'Boulevard de Belleville', 'brown', 1))
+  cards.push(property('prop-brown-1', 'Rue Lecourbe', 'brown', 1))
+  // Light Blue (3) — Bleu clair
+  cards.push(property('prop-lightBlue-0', 'Rue de Vaugirard', 'lightBlue', 1))
+  cards.push(property('prop-lightBlue-1', 'Rue de Courcelles', 'lightBlue', 1))
+  cards.push(property('prop-lightBlue-2', 'Avenue de la République', 'lightBlue', 1))
+  // Pink (3) — Rose / Violet
+  cards.push(property('prop-pink-0', 'Boulevard de la Villette', 'pink', 2))
+  cards.push(property('prop-pink-1', 'Avenue de Neuilly', 'pink', 2))
+  cards.push(property('prop-pink-2', 'Rue de Paradis', 'pink', 2))
   // Orange (3)
-  cards.push(property('prop-orange-0', 'St. James Place', 'orange', 2))
-  cards.push(property('prop-orange-1', 'Tennessee Avenue', 'orange', 2))
-  cards.push(property('prop-orange-2', 'New York Avenue', 'orange', 2))
-  // Red (3)
-  cards.push(property('prop-red-0', 'Kentucky Avenue', 'red', 3))
-  cards.push(property('prop-red-1', 'Indiana Avenue', 'red', 3))
-  cards.push(property('prop-red-2', 'Illinois Avenue', 'red', 3))
-  // Yellow (3)
-  cards.push(property('prop-yellow-0', 'Atlantic Avenue', 'yellow', 3))
-  cards.push(property('prop-yellow-1', 'Ventnor Avenue', 'yellow', 3))
-  cards.push(property('prop-yellow-2', 'Marvin Gardens', 'yellow', 3))
-  // Green (3)
-  cards.push(property('prop-green-0', 'Pacific Avenue', 'green', 4))
-  cards.push(property('prop-green-1', 'North Carolina Avenue', 'green', 4))
-  cards.push(property('prop-green-2', 'Pennsylvania Avenue', 'green', 4))
-  // Dark Blue (2)
-  cards.push(property('prop-darkBlue-0', 'Park Place', 'darkBlue', 4))
-  cards.push(property('prop-darkBlue-1', 'Boardwalk', 'darkBlue', 4))
-  // Railroad (4)
-  cards.push(property('prop-railroad-0', 'Reading Railroad', 'railroad', 2))
-  cards.push(property('prop-railroad-1', 'Pennsylvania Railroad', 'railroad', 2))
-  cards.push(property('prop-railroad-2', 'B&O Railroad', 'railroad', 2))
-  cards.push(property('prop-railroad-3', 'Short Line', 'railroad', 2))
-  // Utility (2)
-  cards.push(property('prop-utility-0', 'Electric Company', 'utility', 2))
-  cards.push(property('prop-utility-1', 'Water Works', 'utility', 2))
+  cards.push(property('prop-orange-0', 'Avenue Mozart', 'orange', 2))
+  cards.push(property('prop-orange-1', 'Boulevard Saint-Michel', 'orange', 2))
+  cards.push(property('prop-orange-2', 'Place Pigalle', 'orange', 2))
+  // Red (3) — Rouge
+  cards.push(property('prop-red-0', 'Avenue Matignon', 'red', 3))
+  cards.push(property('prop-red-1', 'Boulevard Malesherbes', 'red', 3))
+  cards.push(property('prop-red-2', 'Avenue Henri-Martin', 'red', 3))
+  // Yellow (3) — Jaune
+  cards.push(property('prop-yellow-0', 'Faubourg Saint-Honoré', 'yellow', 3))
+  cards.push(property('prop-yellow-1', 'Place de la Bourse', 'yellow', 3))
+  cards.push(property('prop-yellow-2', 'Rue La Fayette', 'yellow', 3))
+  // Green (3) — Vert
+  cards.push(property('prop-green-0', 'Avenue de Breteuil', 'green', 4))
+  cards.push(property('prop-green-1', 'Avenue Foch', 'green', 4))
+  cards.push(property('prop-green-2', 'Boulevard des Capucines', 'green', 4))
+  // Dark Blue (2) — Bleu foncé
+  cards.push(property('prop-darkBlue-0', 'Avenue des Champs-Élysées', 'darkBlue', 4))
+  cards.push(property('prop-darkBlue-1', 'Rue de la Paix', 'darkBlue', 4))
+  // Railroad (4) — Gares
+  cards.push(property('prop-railroad-0', 'Gare Montparnasse', 'railroad', 2))
+  cards.push(property('prop-railroad-1', 'Gare de Lyon', 'railroad', 2))
+  cards.push(property('prop-railroad-2', 'Gare du Nord', 'railroad', 2))
+  cards.push(property('prop-railroad-3', 'Gare Saint-Lazare', 'railroad', 2))
+  // Utility (2) — Services
+  cards.push(property('prop-utility-0', 'Compagnie de distribution d\'électricité', 'utility', 2))
+  cards.push(property('prop-utility-1', 'Compagnie des eaux', 'utility', 2))
 
   // === MONEY CARDS (20) ===
   // 6x 1M, 5x 2M, 3x 3M, 3x 4M, 2x 5M, 1x 10M
