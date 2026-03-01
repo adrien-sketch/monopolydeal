@@ -134,7 +134,7 @@ export function playPassGo(state: GameState, playerId: PlayerId, cardId: string)
   const drawnCards = s.drawPile.splice(0, drawn)
   s.players[playerId].hand.push(...drawnCards)
 
-  s.actionLog.push({ player: playerId, message: `joue Pass Go et pioche ${drawn} carte${drawn > 1 ? 's' : ''}.` })
+  s.actionLog.push({ player: playerId, message: `joue Départ et pioche ${drawn} carte${drawn > 1 ? 's' : ''}.` })
   return s
 }
 
@@ -158,11 +158,11 @@ export function playDebtCollector(state: GameState, playerId: PlayerId, cardId: 
       debtor: opponent,
       creditor: playerId,
       amount: 5,
-      reason: 'Debt Collector',
+      reason: 'Agent de Recouvrement',
     },
   }
   s.turnPhase = 'actionResponse'
-  s.actionLog.push({ player: playerId, message: `joue Debt Collector ! ${opponent} doit payer 5M.` })
+  s.actionLog.push({ player: playerId, message: `joue Agent de Recouvrement ! ${opponent} doit payer 5M.` })
   return s
 }
 
@@ -186,11 +186,11 @@ export function playBirthday(state: GameState, playerId: PlayerId, cardId: strin
       debtor: opponent,
       creditor: playerId,
       amount: 2,
-      reason: "It's My Birthday",
+      reason: 'C\'est mon Anniversaire',
     },
   }
   s.turnPhase = 'actionResponse'
-  s.actionLog.push({ player: playerId, message: `joue It's My Birthday ! ${opponent} doit payer 2M.` })
+  s.actionLog.push({ player: playerId, message: `joue C'est mon Anniversaire ! ${opponent} doit payer 2M.` })
   return s
 }
 
@@ -261,7 +261,7 @@ export function playSlyDeal(state: GameState, playerId: PlayerId, cardId: string
   })
 
   if (!hasStealable) {
-    s.actionLog.push({ player: playerId, message: `joue Sly Deal mais l'adversaire n'a rien à voler.` })
+    s.actionLog.push({ player: playerId, message: `joue Deal Duel mais l'adversaire n'a rien à voler.` })
     return s
   }
 
@@ -278,7 +278,7 @@ export function playSlyDeal(state: GameState, playerId: PlayerId, cardId: string
     },
   }
   s.turnPhase = 'actionResponse'
-  s.actionLog.push({ player: playerId, message: `joue Sly Deal !` })
+  s.actionLog.push({ player: playerId, message: `joue Deal Duel !` })
   return s
 }
 
@@ -299,7 +299,7 @@ export function playForcedDeal(state: GameState, playerId: PlayerId, cardId: str
   })
 
   if (!hasStealable) {
-    s.actionLog.push({ player: playerId, message: `joue Forced Deal mais l'adversaire n'a rien à échanger.` })
+    s.actionLog.push({ player: playerId, message: `joue Deal Troc mais l'adversaire n'a rien à échanger.` })
     return s
   }
 
@@ -316,7 +316,7 @@ export function playForcedDeal(state: GameState, playerId: PlayerId, cardId: str
     },
   }
   s.turnPhase = 'actionResponse'
-  s.actionLog.push({ player: playerId, message: `joue Forced Deal !` })
+  s.actionLog.push({ player: playerId, message: `joue Deal Troc !` })
   return s
 }
 
@@ -336,7 +336,7 @@ export function playDealBreaker(state: GameState, playerId: PlayerId, cardId: st
   )
 
   if (!hasCompleteSet) {
-    s.actionLog.push({ player: playerId, message: `joue Deal Breaker mais l'adversaire n'a pas de set complet.` })
+    s.actionLog.push({ player: playerId, message: `joue Deal Jackpot mais l'adversaire n'a pas de set complet.` })
     return s
   }
 
@@ -353,7 +353,7 @@ export function playDealBreaker(state: GameState, playerId: PlayerId, cardId: st
     },
   }
   s.turnPhase = 'actionResponse'
-  s.actionLog.push({ player: playerId, message: `joue Deal Breaker !` })
+  s.actionLog.push({ player: playerId, message: `joue Deal Jackpot !` })
   return s
 }
 
@@ -371,7 +371,7 @@ export function playHouse(state: GameState, playerId: PlayerId, cardId: string, 
   s.discardPile.push(card)
   player.houses[color] = 1
   s.cardsPlayedThisTurn++
-  s.actionLog.push({ player: playerId, message: `place une Maison sur ${color}.` })
+  s.actionLog.push({ player: playerId, message: `place une maison sur ${color}.` })
   return s
 }
 
@@ -390,7 +390,7 @@ export function playHotel(state: GameState, playerId: PlayerId, cardId: string, 
   s.discardPile.push(card)
   player.hotels[color] = 1
   s.cardsPlayedThisTurn++
-  s.actionLog.push({ player: playerId, message: `place un Hôtel sur ${color}.` })
+  s.actionLog.push({ player: playerId, message: `place un hôtel sur ${color}.` })
   return s
 }
 
@@ -410,7 +410,7 @@ export function resolveJustSayNo(state: GameState, playsJSN: boolean): GameState
       // Challenger accepted (didn't counter), action is blocked
       s.pendingAction = null
       s.turnPhase = 'play'
-      s.actionLog.push({ player: pending.challenger, message: `n'a pas contré Just Say No.` })
+      s.actionLog.push({ player: pending.challenger, message: `n'a pas contré le Joker.` })
     }
     return s
   }
@@ -423,7 +423,7 @@ export function resolveJustSayNo(state: GameState, playsJSN: boolean): GameState
 
   const [jsnCard] = player.hand.splice(jsnIdx, 1)
   s.discardPile.push(jsnCard)
-  s.actionLog.push({ player: jsnPlayer, message: `joue Just Say No !` })
+  s.actionLog.push({ player: jsnPlayer, message: `joue Joker !` })
 
   // Check if other side can counter
   const otherPlayer = jsnPlayer === pending.target ? pending.challenger : pending.target

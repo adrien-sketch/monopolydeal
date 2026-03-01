@@ -43,9 +43,9 @@ describe('computeBotTurn', () => {
       prop('h-b0', 'brown'),
       prop('h-b1', 'brown'),
     ]
-    // Give bot a Deal Breaker
+    // Give bot a Deal Jackpot
     state.players.bot.hand = [{
-      id: 'bot-db', type: 'action', name: 'Deal Breaker',
+      id: 'bot-db', type: 'action', name: 'Deal Jackpot',
       bankValue: 5, actionType: 'dealBreaker',
     }]
     const actions = computeBotTurn(state)
@@ -89,7 +89,7 @@ describe('shouldBotPlayJustSayNo', () => {
   it('blocks Deal Breaker', () => {
     const state = makeBotTurnState()
     state.players.bot.hand.push({
-      id: 'bot-jsn', type: 'action', name: 'Just Say No',
+      id: 'bot-jsn', type: 'action', name: 'Joker !',
       bankValue: 4, actionType: 'justSayNo',
     })
     state.pendingAction = {
@@ -110,7 +110,7 @@ describe('shouldBotPlayJustSayNo', () => {
   it('accepts small debts', () => {
     const state = makeBotTurnState()
     state.players.bot.hand.push({
-      id: 'bot-jsn', type: 'action', name: 'Just Say No',
+      id: 'bot-jsn', type: 'action', name: 'Joker !',
       bankValue: 4, actionType: 'justSayNo',
     })
     state.pendingAction = {
@@ -123,7 +123,7 @@ describe('shouldBotPlayJustSayNo', () => {
         debtor: 'bot',
         creditor: 'human',
         amount: 2,
-        reason: 'Birthday',
+        reason: 'C\'est mon Anniversaire',
       },
     }
     expect(shouldBotPlayJustSayNo(state)).toBe(false)

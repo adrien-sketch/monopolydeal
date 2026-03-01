@@ -79,26 +79,26 @@ function createAllCards(): Card[] {
   cards.push(money('money-10-0', 10))
 
   // === ACTION CARDS (34) ===
-  // 10x Pass Go
-  for (let i = 0; i < 10; i++) cards.push(action(`action-passGo-${i}`, 'Pass Go', 'passGo'))
-  // 2x Deal Breaker
-  for (let i = 0; i < 2; i++) cards.push(action(`action-dealBreaker-${i}`, 'Deal Breaker', 'dealBreaker'))
-  // 3x Sly Deal
-  for (let i = 0; i < 3; i++) cards.push(action(`action-slyDeal-${i}`, 'Sly Deal', 'slyDeal'))
-  // 3x Forced Deal
-  for (let i = 0; i < 3; i++) cards.push(action(`action-forcedDeal-${i}`, 'Forced Deal', 'forcedDeal'))
-  // 3x Debt Collector
-  for (let i = 0; i < 3; i++) cards.push(action(`action-debtCollector-${i}`, 'Debt Collector', 'debtCollector'))
-  // 2x It's My Birthday
-  for (let i = 0; i < 2; i++) cards.push(action(`action-birthday-${i}`, "It's My Birthday", 'birthday'))
-  // 3x Just Say No
-  for (let i = 0; i < 3; i++) cards.push(action(`action-justSayNo-${i}`, 'Just Say No', 'justSayNo'))
-  // 2x Double the Rent
-  for (let i = 0; i < 2; i++) cards.push(action(`action-doubleTheRent-${i}`, 'Double the Rent', 'doubleTheRent'))
-  // 3x House
-  for (let i = 0; i < 3; i++) cards.push(action(`action-house-${i}`, 'House', 'house'))
-  // 3x Hotel
-  for (let i = 0; i < 3; i++) cards.push(action(`action-hotel-${i}`, 'Hotel', 'hotel'))
+  // 10x Départ
+  for (let i = 0; i < 10; i++) cards.push(action(`action-passGo-${i}`, 'Départ', 'passGo'))
+  // 2x Deal Jackpot
+  for (let i = 0; i < 2; i++) cards.push(action(`action-dealBreaker-${i}`, 'Deal Jackpot', 'dealBreaker'))
+  // 3x Deal Duel
+  for (let i = 0; i < 3; i++) cards.push(action(`action-slyDeal-${i}`, 'Deal Duel', 'slyDeal'))
+  // 3x Deal Troc
+  for (let i = 0; i < 3; i++) cards.push(action(`action-forcedDeal-${i}`, 'Deal Troc', 'forcedDeal'))
+  // 3x Agent de Recouvrement
+  for (let i = 0; i < 3; i++) cards.push(action(`action-debtCollector-${i}`, 'Agent de Recouvrement', 'debtCollector'))
+  // 2x C'est mon Anniversaire !
+  for (let i = 0; i < 2; i++) cards.push(action(`action-birthday-${i}`, 'C\'est mon Anniversaire !', 'birthday'))
+  // 3x Joker ! (Non Merci)
+  for (let i = 0; i < 3; i++) cards.push(action(`action-justSayNo-${i}`, 'Joker !', 'justSayNo'))
+  // 2x Double Loyer
+  for (let i = 0; i < 2; i++) cards.push(action(`action-doubleTheRent-${i}`, 'Double Loyer', 'doubleTheRent'))
+  // 3x Maison
+  for (let i = 0; i < 3; i++) cards.push(action(`action-house-${i}`, 'Maison', 'house'))
+  // 3x Hôtel
+  for (let i = 0; i < 3; i++) cards.push(action(`action-hotel-${i}`, 'Hôtel', 'hotel'))
 
   // === RENT CARDS (13) ===
   // 2x Brown/Light Blue

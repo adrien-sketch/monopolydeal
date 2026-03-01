@@ -91,7 +91,7 @@ describe('playPassGo', () => {
     const state = makeTestState()
     const s = drawCards(state)
     const handSize = s.players.human.hand.length
-    const passGoCard: Card = { id: 'test-passgo', type: 'action', name: 'Pass Go', bankValue: 1, actionType: 'passGo' }
+    const passGoCard: Card = { id: 'test-passgo', type: 'action', name: 'Départ', bankValue: 1, actionType: 'passGo' }
     s.players.human.hand.push(passGoCard)
     const s2 = playPassGo(s, 'human', 'test-passgo')
     expect(s2.players.human.hand).toHaveLength(handSize + 2) // -1 played + 2 drawn = net +2 (card was added)
@@ -104,7 +104,7 @@ describe('playDebtCollector', () => {
   it('creates pending payment action with JSN wrapper', () => {
     const state = makeTestState()
     const s = drawCards(state)
-    const dcCard: Card = { id: 'test-dc', type: 'action', name: 'Debt Collector', bankValue: 3, actionType: 'debtCollector' }
+    const dcCard: Card = { id: 'test-dc', type: 'action', name: 'Agent de Recouvrement', bankValue: 3, actionType: 'debtCollector' }
     s.players.human.hand.push(dcCard)
     const s2 = playDebtCollector(s, 'human', 'test-dc')
     expect(s2.pendingAction).not.toBeNull()
@@ -133,7 +133,7 @@ describe('resolveJustSayNo', () => {
         debtor: 'bot',
         creditor: 'human',
         amount: 5,
-        reason: 'Debt Collector',
+        reason: 'Agent de Recouvrement',
       },
     }
     const s2 = resolveJustSayNo(s, false)
@@ -145,7 +145,7 @@ describe('resolveJustSayNo', () => {
     const state = makeTestState()
     const s = drawCards(state)
     // Give bot a JSN card
-    const jsnCard: Card = { id: 'bot-jsn', type: 'action', name: 'Just Say No', bankValue: 4, actionType: 'justSayNo' }
+    const jsnCard: Card = { id: 'bot-jsn', type: 'action', name: 'Joker !', bankValue: 4, actionType: 'justSayNo' }
     s.players.bot.hand.push(jsnCard)
     // No JSN for human
     s.players.human.hand = s.players.human.hand.filter(c => c.actionType !== 'justSayNo')
@@ -160,7 +160,7 @@ describe('resolveJustSayNo', () => {
         debtor: 'bot',
         creditor: 'human',
         amount: 5,
-        reason: 'Debt Collector',
+        reason: 'Agent de Recouvrement',
       },
     }
     const s2 = resolveJustSayNo(s, true)
