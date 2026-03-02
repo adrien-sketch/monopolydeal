@@ -2,10 +2,11 @@
 .game-board {
   display: grid;
   grid-template-rows: auto 1fr auto;
-  height: 100vh;
+  min-height: 100vh;
   max-width: 1300px;
   margin: 0 auto;
   padding: var(--gap-lg);
+  padding-bottom: var(--gap-xl);
   gap: var(--gap-lg);
 }
 
@@ -94,13 +95,14 @@
   flex-direction: column;
   gap: var(--gap-md);
   padding: var(--gap-lg);
+  padding-bottom: 20px;
   background: var(--glass-bg);
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
   border-radius: 16px;
   border: 1px solid var(--glass-border);
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .player-area::before {
