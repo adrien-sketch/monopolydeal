@@ -50,7 +50,6 @@ export function createInitialState(): GameState {
     winner: null,
     actionLog: [],
     turnNumber: 1,
-    isFirstTurn: { human: true, bot: true },
   }
 }
 
@@ -68,17 +67,14 @@ function recycleDiscardPile(state: GameState): GameState {
 export function drawCards(state: GameState): GameState {
   let s = cloneState(state)
   const player = s.players[s.currentPlayer]
-  const count = (s.isFirstTurn[s.currentPlayer] || player.hand.length === 0) ? 5 : 2
+  // Official rules: draw 2 cards, or 5 if hand is empty at start of turn
+  const count = player.hand.length === 0 ? 5 : 2
 
   s = recycleDiscardPile(s)
 
   const drawn = Math.min(count, s.drawPile.length)
   const cards = s.drawPile.splice(0, drawn)
   s.players[s.currentPlayer].hand.push(...cards)
-
-  if (s.isFirstTurn[s.currentPlayer]) {
-    s.isFirstTurn[s.currentPlayer] = false
-  }
 
   s.turnPhase = 'play'
   s.actionLog.push({
@@ -673,7 +669,8 @@ export function resolveDiscard(state: GameState, cardIds: string[]): GameState {
     const idx = player.hand.findIndex(c => c.id === cardId)
     if (idx !== -1) {
       const [card] = player.hand.splice(idx, 1)
-      s.discardPile.push(card)
+      // Official rules: excess cards go to the BOTTOM of the draw pile
+      s.drawPile.push(card)
     }
   }
 
@@ -688,19 +685,21 @@ function switchTurn(state: GameState): GameState {
   s.cardsPlayedThisTurn = 0
   s.turnPhase = 'draw'
   s.turnNumber++
-  return s
+  // Check if the new current player already has 3 sets (e.g. from receiving
+  // a property as payment during the previous turn). Per official rules,
+  // you can only win on your own turn.
+  return checkWinCondition(s)
 }
 
 // ===== Check Win Condition =====
+// Official rules: you can only win on YOUR turn.
 export function checkWinCondition(state: GameState): GameState {
   const s = cloneState(state)
-  for (const pid of ['human', 'bot'] as PlayerId[]) {
-    if (countCompleteSets(s.players[pid]) >= 3) {
-      s.winner = pid
-      s.turnPhase = 'gameOver'
-      s.actionLog.push({ player: pid, message: `a 3 sets complets et gagne !` })
-      return s
-    }
+  const pid = s.currentPlayer
+  if (countCompleteSets(s.players[pid]) >= 3) {
+    s.winner = pid
+    s.turnPhase = 'gameOver'
+    s.actionLog.push({ player: pid, message: `a 3 sets complets et gagne !` })
   }
   return s
 }

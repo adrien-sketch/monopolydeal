@@ -135,7 +135,6 @@ export interface GameState {
   winner: PlayerId | null
   actionLog: LogEntry[]
   turnNumber: number
-  isFirstTurn: Record<PlayerId, boolean>
 }
 
 // ===== Game Actions (for reducer) =====

@@ -184,6 +184,15 @@ function enumerateMoves(state: GameState): BotMove[] {
             score: 0,
             apply: (s) => playRent(s, 'bot', card.id, color, false),
           })
+          // Doubled rent (if has Double The Rent card and room for 2 plays)
+          const doubleCard = player.hand.find(c => c.actionType === 'doubleTheRent' && c.id !== card.id)
+          if (doubleCard && state.cardsPlayedThisTurn < 2) {
+            moves.push({
+              action: { type: 'PLAY_RENT', cardId: card.id, color, doubled: true, doubleCardId: doubleCard.id },
+              score: 0,
+              apply: (s) => playRent(s, 'bot', card.id, color, true, doubleCard.id),
+            })
+          }
         }
       }
     }

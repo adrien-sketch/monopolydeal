@@ -5,7 +5,6 @@ import type { Card, GameState } from '../types'
 
 function makeBotTurnState(): GameState {
   const state = createInitialState()
-  state.isFirstTurn = { human: false, bot: false }
   state.currentPlayer = 'bot'
   return drawCards(state)
 }

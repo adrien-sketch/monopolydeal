@@ -15,11 +15,14 @@ import {
   botSelectSetToSteal, botSelectPropertyToGive,
 } from '../game/bot'
 import { chooseBotPayment } from '../game/payment'
+import { getHouseableColors, getHotelableColors } from '../game/engine'
 import '../styles/layout.css'
 
 type ColorPickerContext =
   | { purpose: 'wildcard'; cardId: string; colors: PropertyColor[] }
   | { purpose: 'rent'; cardId: string; colors: PropertyColor[] }
+  | { purpose: 'house'; cardId: string; colors: PropertyColor[] }
+  | { purpose: 'hotel'; cardId: string; colors: PropertyColor[] }
 
 export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }) {
   const { state, dispatch } = useGame()
@@ -27,6 +30,7 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
   const stateRef = useRef(state)
   stateRef.current = state
   const [colorPicker, setColorPicker] = useState<ColorPickerContext | null>(null)
+  const [pendingDoubleRent, setPendingDoubleRent] = useState<{ cardId: string; color: PropertyColor; doubleCardId: string } | null>(null)
 
   // Check for game over
   useEffect(() => {
@@ -176,8 +180,24 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
     } else if (card.type === 'action') {
       if (card.actionType === 'justSayNo' || card.actionType === 'doubleTheRent') {
         dispatch({ type: 'PLAY_CARD_AS_MONEY', cardId: card.id })
-      } else if (card.actionType === 'house' || card.actionType === 'hotel') {
-        dispatch({ type: 'PLAY_CARD_AS_MONEY', cardId: card.id })
+      } else if (card.actionType === 'house') {
+        const eligible = getHouseableColors(s.players.human)
+        if (eligible.length === 1) {
+          dispatch({ type: 'PLAY_HOUSE', cardId: card.id, color: eligible[0] })
+        } else if (eligible.length > 1) {
+          setColorPicker({ purpose: 'house', cardId: card.id, colors: eligible })
+        } else {
+          dispatch({ type: 'PLAY_CARD_AS_MONEY', cardId: card.id })
+        }
+      } else if (card.actionType === 'hotel') {
+        const eligible = getHotelableColors(s.players.human)
+        if (eligible.length === 1) {
+          dispatch({ type: 'PLAY_HOTEL', cardId: card.id, color: eligible[0] })
+        } else if (eligible.length > 1) {
+          setColorPicker({ purpose: 'hotel', cardId: card.id, colors: eligible })
+        } else {
+          dispatch({ type: 'PLAY_CARD_AS_MONEY', cardId: card.id })
+        }
       } else {
         dispatch({ type: 'PLAY_ACTION', cardId: card.id })
       }
@@ -188,7 +208,7 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
         if (validColors.length === 0) {
           dispatch({ type: 'PLAY_CARD_AS_MONEY', cardId: card.id })
         } else if (validColors.length === 1) {
-          dispatch({ type: 'PLAY_RENT', cardId: card.id, color: validColors[0], doubled: false })
+          maybeDoubleRent(card.id, validColors[0])
         } else {
           setColorPicker({ purpose: 'rent', cardId: card.id, colors: validColors })
         }
@@ -204,15 +224,37 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
     }
   }, [dispatch])
 
+  const maybeDoubleRent = useCallback((rentCardId: string, color: PropertyColor) => {
+    const s = stateRef.current
+    // Check if player has a Double The Rent card and room for 2 plays
+    if (s.cardsPlayedThisTurn < 2) {
+      const doubleCard = s.players.human.hand.find(
+        c => c.actionType === 'doubleTheRent' && c.id !== rentCardId
+      )
+      if (doubleCard) {
+        setPendingDoubleRent({ cardId: rentCardId, color, doubleCardId: doubleCard.id })
+        return
+      }
+    }
+    dispatch({ type: 'PLAY_RENT', cardId: rentCardId, color, doubled: false })
+  }, [dispatch])
+
   const handleColorSelected = useCallback((color: PropertyColor) => {
     if (!colorPicker) return
     if (colorPicker.purpose === 'wildcard') {
       dispatch({ type: 'PLAY_PROPERTY', cardId: colorPicker.cardId, color })
+    } else if (colorPicker.purpose === 'house') {
+      dispatch({ type: 'PLAY_HOUSE', cardId: colorPicker.cardId, color })
+    } else if (colorPicker.purpose === 'hotel') {
+      dispatch({ type: 'PLAY_HOTEL', cardId: colorPicker.cardId, color })
     } else {
-      dispatch({ type: 'PLAY_RENT', cardId: colorPicker.cardId, color, doubled: false })
+      // rent
+      setColorPicker(null)
+      maybeDoubleRent(colorPicker.cardId, color)
+      return
     }
     setColorPicker(null)
-  }, [colorPicker, dispatch])
+  }, [colorPicker, dispatch, maybeDoubleRent])
 
   const handlePlayAsMoney = useCallback((card: CardType) => {
     const s = stateRef.current
@@ -366,9 +408,44 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
       {colorPicker && (
         <ColorPickerModal
           colors={colorPicker.colors}
-          title={colorPicker.purpose === 'wildcard' ? 'Choisissez la couleur du Joker' : 'Choisissez la couleur du Loyer'}
+          title={
+            colorPicker.purpose === 'wildcard' ? 'Choisissez la couleur du Joker' :
+            colorPicker.purpose === 'house' ? 'Placer la Maison sur quel set ?' :
+            colorPicker.purpose === 'hotel' ? 'Placer l\'Hôtel sur quel set ?' :
+            'Choisissez la couleur du Loyer'
+          }
           onSelect={handleColorSelected}
         />
+      )}
+      {pendingDoubleRent && (
+        <div className="modal-overlay">
+          <div className="modal" style={{ textAlign: 'center' }}>
+            <h3 className="modal__title">Doubler le loyer ?</h3>
+            <p style={{ color: 'var(--text-secondary)', marginBottom: '16px' }}>
+              Vous avez une carte Double Loyer. Voulez-vous doubler le loyer demandé ? (compte comme 2 cartes jouées)
+            </p>
+            <div className="modal__actions" style={{ justifyContent: 'center' }}>
+              <button
+                className="modal__btn modal__btn--secondary"
+                onClick={() => {
+                  dispatch({ type: 'PLAY_RENT', cardId: pendingDoubleRent.cardId, color: pendingDoubleRent.color, doubled: false })
+                  setPendingDoubleRent(null)
+                }}
+              >
+                Non
+              </button>
+              <button
+                className="modal__btn modal__btn--primary"
+                onClick={() => {
+                  dispatch({ type: 'PLAY_RENT', cardId: pendingDoubleRent.cardId, color: pendingDoubleRent.color, doubled: true, doubleCardId: pendingDoubleRent.doubleCardId })
+                  setPendingDoubleRent(null)
+                }}
+              >
+                Oui, doubler !
+              </button>
+            </div>
+          </div>
+        </div>
       )}
       {state.winner && (
         <div className="modal-overlay">
