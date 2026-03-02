@@ -60,13 +60,13 @@
   --monopoly-dark: #0a0e1a;
 
   /* Card */
-  --card-width: 120px;
-  --card-height: 175px;
+  --card-width: 96px;
+  --card-height: 136px;
   --card-radius: 10px;
 
   /* Spacing */
-  --gap-sm: 4px;
-  --gap-md: 8px;
-  --gap-lg: 16px;
-  --gap-xl: 24px;
+  --gap-sm: 3px;
+  --gap-md: 6px;
+  --gap-lg: 10px;
+  --gap-xl: 16px;
 }

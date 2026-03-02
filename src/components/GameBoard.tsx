@@ -316,8 +316,9 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
               <Card
                 card={{ id: 'draw', type: 'money', name: '', bankValue: 0 }}
                 faceDown
+                small
               />
-              <span className="draw-pile__count">{state.drawPile.length} cartes</span>
+              <span className="draw-pile__count">{state.drawPile.length}</span>
             </div>
             {state.discardPile.length > 0 && (
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>

@@ -2,27 +2,28 @@
 .game-board {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100vh;
   max-width: 1300px;
   margin: 0 auto;
-  padding: var(--gap-lg);
-  padding-bottom: 32px;
-  gap: var(--gap-lg);
+  padding: 8px 10px;
+  gap: 6px;
+  overflow: hidden;
 }
 
 /* ===== Opponent Area (top) ===== */
 .opponent-area {
   display: flex;
-  gap: var(--gap-lg);
+  gap: var(--gap-md);
   align-items: flex-start;
-  padding: var(--gap-lg);
+  padding: 8px 10px;
   background: var(--glass-bg);
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
-  border-radius: 16px;
+  border-radius: 12px;
   border: 1px solid var(--glass-border);
   position: relative;
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .opponent-area::before {
@@ -70,18 +71,20 @@
 /* ===== Middle Area ===== */
 .middle-area {
   display: flex;
-  gap: var(--gap-lg);
+  gap: var(--gap-md);
   align-items: stretch;
   flex: 1;
   min-height: 0;
+  overflow: hidden;
 }
 
 .middle-area__center {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--gap-lg);
-  padding: var(--gap-lg);
+  justify-content: center;
+  gap: 8px;
+  padding: 6px;
   flex: 1;
 }
 
@@ -95,16 +98,16 @@
 .player-area {
   display: flex;
   flex-direction: column;
-  gap: var(--gap-md);
-  padding: var(--gap-lg);
-  padding-bottom: 20px;
+  gap: 4px;
+  padding: 8px 10px;
   background: var(--glass-bg);
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
-  border-radius: 16px;
+  border-radius: 12px;
   border: 1px solid var(--glass-border);
   position: relative;
   overflow: visible;
+  flex-shrink: 0;
 }
 
 .player-area::before {
@@ -119,7 +122,7 @@
 
 .player-area__layout {
   display: flex;
-  gap: 12px;
+  gap: 8px;
   flex: 1;
   align-items: flex-start;
   flex-wrap: wrap;
@@ -129,10 +132,20 @@
 .hand {
   display: flex;
   justify-content: center;
-  gap: var(--gap-sm);
-  flex-wrap: wrap;
-  padding: var(--gap-md) 0;
-  padding-bottom: 16px;
+  padding: 4px 0 8px;
+}
+
+.hand > * {
+  margin-left: -14px;
+  transition: transform 0.2s ease, z-index 0s;
+}
+
+.hand > *:first-child {
+  margin-left: 0;
+}
+
+.hand > *:hover {
+  z-index: 10;
 }
 
 /* ===== Property Sets ===== */
@@ -153,12 +166,12 @@
 .property-set {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  padding: var(--gap-sm);
-  border-radius: 10px;
+  gap: 1px;
+  padding: 3px;
+  border-radius: 8px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.04);
-  min-width: 70px;
+  min-width: 58px;
   transition: background 0.2s ease, border-color 0.2s ease;
 }
 
@@ -186,7 +199,7 @@
 }
 
 .property-set__cards .card--small {
-  margin-top: -55px;
+  margin-top: -48px;
 }
 
 .property-set__cards .card--small:first-child {
@@ -210,11 +223,11 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--gap-sm);
-  padding: var(--gap-md);
-  min-width: 80px;
+  gap: 2px;
+  padding: 4px 6px;
+  min-width: 60px;
   background: rgba(255, 255, 255, 0.03);
-  border-radius: 10px;
+  border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.04);
 }
 
@@ -239,13 +252,12 @@
 .bank__cards {
   display: flex;
   flex-direction: column;
-  gap: -60px;
-  max-height: 160px;
+  max-height: 100px;
   overflow-y: auto;
 }
 
 .bank__cards .card--small {
-  margin-top: -68px;
+  margin-top: -58px;
 }
 
 .bank__cards .card--small:first-child {
@@ -262,8 +274,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--gap-xl);
-  padding: var(--gap-lg);
+  gap: var(--gap-lg);
+  padding: 8px 16px;
   background: var(--glass-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -283,7 +295,7 @@
 }
 
 .turn-controls__info {
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   color: var(--text-secondary);
   font-weight: 500;
 }
@@ -291,8 +303,8 @@
 .turn-controls__btn {
   background: linear-gradient(135deg, var(--accent-cyan), var(--accent-violet));
   color: white;
-  padding: 10px 28px;
-  font-size: 0.95rem;
+  padding: 7px 20px;
+  font-size: 0.85rem;
   font-weight: 700;
   border-radius: 50px;
   transition: all 0.2s ease;
@@ -309,16 +321,15 @@
 
 /* ===== Action Log ===== */
 .action-log {
-  width: 260px;
-  max-height: 300px;
+  width: 220px;
   overflow-y: auto;
-  padding: var(--gap-lg);
+  padding: 8px 10px;
   background: var(--glass-bg);
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
-  border-radius: 16px;
+  border-radius: 12px;
   border: 1px solid var(--glass-border);
-  font-size: 0.75rem;
+  font-size: 0.7rem;
 }
 
 .action-log__title {

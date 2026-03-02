@@ -101,11 +101,11 @@
 
 /* ===== Small Card ===== */
 .card--small {
-  width: 68px;
-  height: 98px;
-  font-size: 0.5rem;
+  width: 54px;
+  height: 76px;
+  font-size: 0.42rem;
   border-width: 1.5px;
-  border-radius: 7px;
+  border-radius: 6px;
 }
 
 .card--small.card--action-border {
@@ -122,8 +122,8 @@
 }
 
 .card--small .card__prop-header {
-  min-height: 22px;
-  padding: 3px 4px;
+  min-height: 18px;
+  padding: 2px 3px;
 }
 
 .card--small .card__prop-name {
@@ -144,9 +144,9 @@
 .card--small .card__action-circle,
 .card--small .card__rent-circle,
 .card--small .card__rainbow-circle {
-  width: 22px;
-  height: 22px;
-  border-width: 1.5px;
+  width: 18px;
+  height: 18px;
+  border-width: 1px;
 }
 
 .card--small .card__action-icon {
@@ -158,9 +158,9 @@
 }
 
 .card--small .card__money-value {
-  width: 34px;
-  height: 34px;
-  border-width: 2px;
+  width: 28px;
+  height: 28px;
+  border-width: 1.5px;
 }
 
 .card--small .card__money-amount {
@@ -200,13 +200,13 @@
 }
 
 .card--small .card__set-indicator {
-  margin: 1px 0;
-  gap: 2px;
+  margin: 0;
+  gap: 1px;
 }
 
 .card--small .card__set-dot {
-  width: 8px;
-  height: 5px;
+  width: 6px;
+  height: 4px;
 }
 
 /* ===== Card Inner ===== */
