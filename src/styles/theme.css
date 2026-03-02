@@ -1,46 +1,45 @@
 :root {
-  /* Dark base */
-  --bg-primary: #0a0e1a;
-  --bg-secondary: #111827;
-  --bg-card: rgba(255, 255, 255, 0.04);
+  /* Green base — Monopoly Deal official */
+  --bg-primary: #3EA03B;
+  --bg-secondary: #359833;
+  --bg-card: rgba(255, 255, 255, 0.06);
 
   /* Accent colors */
-  --accent-cyan: #00d4ff;
-  --accent-violet: #a855f7;
-  --accent-magenta: #ec4899;
-  --accent-gold: #fbbf24;
-  --accent-lime: #84cc16;
-  --accent-orange: #f97316;
-  --accent-red: #ef4444;
-  --accent-green: #22c55e;
+  --accent-cyan: #00ACC1;
+  --accent-violet: #7B1FA2;
+  --accent-magenta: #E31837;
+  --accent-gold: #FFC107;
+  --accent-lime: #8BC34A;
+  --accent-orange: #F57C00;
+  --accent-red: #E31837;
+  --accent-green: #2E7D32;
 
   /* Gradients */
-  --gradient-primary: linear-gradient(135deg, #00d4ff, #a855f7);
-  --gradient-gold: linear-gradient(135deg, #fbbf24, #f59e0b);
-  --gradient-danger: linear-gradient(135deg, #ef4444, #dc2626);
-  --gradient-success: linear-gradient(135deg, #22c55e, #16a34a);
-  --gradient-bg: radial-gradient(ellipse at 20% 50%, rgba(0, 212, 255, 0.08) 0%, transparent 50%),
-                 radial-gradient(ellipse at 80% 20%, rgba(168, 85, 247, 0.08) 0%, transparent 50%),
-                 radial-gradient(ellipse at 50% 80%, rgba(236, 72, 153, 0.05) 0%, transparent 50%),
-                 var(--bg-primary);
+  --gradient-primary: linear-gradient(135deg, #43A047, #2E7D32);
+  --gradient-gold: linear-gradient(135deg, #FFC107, #FF9800);
+  --gradient-danger: linear-gradient(135deg, #E31837, #B71C1C);
+  --gradient-success: linear-gradient(135deg, #43A047, #2E7D32);
+  --gradient-bg: radial-gradient(ellipse at 30% 30%, rgba(255, 255, 255, 0.08) 0%, transparent 50%),
+                 radial-gradient(ellipse at 70% 70%, rgba(0, 0, 0, 0.1) 0%, transparent 50%),
+                 #3EA03B;
 
-  /* Glass */
-  --glass-bg: rgba(255, 255, 255, 0.05);
-  --glass-border: rgba(255, 255, 255, 0.08);
+  /* Panels — white frosted */
+  --glass-bg: rgba(255, 255, 255, 0.92);
+  --glass-border: rgba(0, 0, 0, 0.08);
   --glass-blur: 12px;
 
-  /* Text */
-  --text-primary: #f1f5f9;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
+  /* Text — dark on light panels */
+  --text-primary: #1a1a2e;
+  --text-secondary: #555;
+  --text-muted: #888;
 
   /* Glow */
-  --glow-cyan: 0 0 20px rgba(0, 212, 255, 0.3);
-  --glow-violet: 0 0 20px rgba(168, 85, 247, 0.3);
-  --glow-gold: 0 0 20px rgba(251, 191, 36, 0.3);
-  --glow-red: 0 0 20px rgba(239, 68, 68, 0.3);
+  --glow-cyan: 0 0 20px rgba(62, 160, 59, 0.3);
+  --glow-violet: 0 0 20px rgba(227, 24, 55, 0.3);
+  --glow-gold: 0 0 20px rgba(255, 193, 7, 0.3);
+  --glow-red: 0 0 20px rgba(227, 24, 55, 0.3);
 
-  /* Property colors (unchanged) */
+  /* Property colors */
   --color-brown: #8B4513;
   --color-light-blue: #87CEEB;
   --color-pink: #D81B60;
@@ -52,12 +51,12 @@
   --color-railroad: #424242;
   --color-utility: #78909C;
 
-  /* Legacy aliases for compatibility */
-  --monopoly-green: #22c55e;
-  --monopoly-red: #ef4444;
-  --monopoly-blue: #3b82f6;
-  --monopoly-gold: #fbbf24;
-  --monopoly-dark: #0a0e1a;
+  /* Legacy aliases */
+  --monopoly-green: #3EA03B;
+  --monopoly-red: #E31837;
+  --monopoly-blue: #1565C0;
+  --monopoly-gold: #FFC107;
+  --monopoly-dark: #1a1a2e;
 
   /* Card */
   --card-width: 96px;
