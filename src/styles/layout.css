@@ -132,20 +132,21 @@
 .hand {
   display: flex;
   justify-content: center;
+  align-items: flex-end;
   padding: 4px 0 8px;
+  min-height: calc(var(--card-height) + 16px);
 }
 
-.hand > * {
-  margin-left: -14px;
-  transition: transform 0.2s ease, z-index 0s;
+.hand__card {
+  position: relative;
+  transition: transform 0.2s ease, margin 0.2s ease;
 }
 
-.hand > *:first-child {
-  margin-left: 0;
-}
-
-.hand > *:hover {
+.hand__card:hover {
+  transform: translateY(-18px) scale(1.06);
   z-index: 10;
+  margin-left: 6px !important;
+  margin-right: 6px;
 }
 
 /* ===== Property Sets ===== */

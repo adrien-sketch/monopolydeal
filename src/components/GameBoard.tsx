@@ -353,24 +353,32 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
       <div className="player-area">
         <PlayerArea player={state.players.human} />
         <div className="hand">
-          {state.players.human.hand.map(card => (
-            <div key={card.id} style={{ position: 'relative' }}>
-              <Card
-                card={card}
-                selected={false}
-                disabled={!canPlay}
-                onClick={() => handleCardPlay(card)}
-              />
-              {canPlay && card.bankValue > 0 && card.type !== 'money' && (
-                <button
-                  className="card__play-as-money"
-                  onClick={(e) => { e.stopPropagation(); handlePlayAsMoney(card) }}
-                >
-                  {card.bankValue}M
-                </button>
-              )}
-            </div>
-          ))}
+          {state.players.human.hand.map((card, i) => {
+            const count = state.players.human.hand.length
+            const ml = count <= 5 ? 6 : count <= 8 ? -6 : -14
+            return (
+              <div
+                key={card.id}
+                className="hand__card"
+                style={{ marginLeft: i === 0 ? 0 : ml }}
+              >
+                <Card
+                  card={card}
+                  selected={false}
+                  disabled={!canPlay}
+                  onClick={() => handleCardPlay(card)}
+                />
+                {canPlay && card.bankValue > 0 && card.type !== 'money' && (
+                  <button
+                    className="card__play-as-money"
+                    onClick={(e) => { e.stopPropagation(); handlePlayAsMoney(card) }}
+                  >
+                    {card.bankValue}M
+                  </button>
+                )}
+              </div>
+            )
+          })}
         </div>
       </div>
 
