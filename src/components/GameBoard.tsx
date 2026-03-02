@@ -237,8 +237,8 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
     <div className="game-board">
       {/* Opponent area */}
       <div className="opponent-area">
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
-          <strong style={{ color: 'var(--monopoly-red)', fontSize: '0.85rem' }}>Bot</strong>
+        <div className="opponent-area__info">
+          <strong className="opponent-area__name">Bot</strong>
           <div className="opponent-area__hand">
             {state.players.bot.hand.map((_, i) => (
               <Card
@@ -249,7 +249,7 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
               />
             ))}
           </div>
-          <span style={{ fontSize: '0.7rem', color: '#888' }}>{state.players.bot.hand.length} cartes</span>
+          <span className="opponent-area__count">{state.players.bot.hand.length} cartes</span>
         </div>
         <PlayerArea player={state.players.bot} isOpponent />
       </div>
@@ -268,13 +268,13 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
             {state.discardPile.length > 0 && (
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
                 <Card card={state.discardPile[state.discardPile.length - 1]} small />
-                <span style={{ fontSize: '0.7rem', color: '#888' }}>Défausse</span>
+                <span className="discard-pile__label">Défausse</span>
               </div>
             )}
           </div>
 
           {/* Turn info */}
-          <div className="turn-controls">
+          <div className={`turn-controls ${isHumanTurn ? 'turn-controls--human' : 'turn-controls--bot'}`}>
             <span className="turn-controls__info">
               Tour {state.turnNumber} — {isHumanTurn ? 'Votre tour' : 'Tour du Bot'}
               {state.turnPhase === 'play' && ` — ${state.cardsPlayedThisTurn}/3 cartes jouées`}
@@ -308,12 +308,8 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
               />
               {canPlay && card.bankValue > 0 && card.type !== 'money' && (
                 <button
+                  className="card__play-as-money"
                   onClick={(e) => { e.stopPropagation(); handlePlayAsMoney(card) }}
-                  style={{
-                    position: 'absolute', bottom: '-8px', left: '50%', transform: 'translateX(-50%)',
-                    fontSize: '0.55rem', padding: '2px 6px', background: '#4CAF50', color: 'white',
-                    borderRadius: '4px', whiteSpace: 'nowrap', zIndex: 5,
-                  }}
                 >
                   {card.bankValue}M
                 </button>
@@ -377,10 +373,12 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
       {state.winner && (
         <div className="modal-overlay">
           <div className="modal" style={{ textAlign: 'center' }}>
-            <h2 className="modal__title" style={{ color: state.winner === 'human' ? 'var(--monopoly-green)' : 'var(--monopoly-red)' }}>
+            <h2 className="modal__title">
               {state.winner === 'human' ? 'Victoire !' : 'Défaite...'}
             </h2>
-            <p>{state.winner === 'human' ? 'Vous avez 3 sets complets !' : 'Le bot a complété 3 sets avant vous.'}</p>
+            <p style={{ color: 'var(--text-secondary)' }}>
+              {state.winner === 'human' ? 'Vous avez 3 sets complets !' : 'Le bot a complété 3 sets avant vous.'}
+            </p>
           </div>
         </div>
       )}

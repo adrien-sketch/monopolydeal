@@ -1,13 +1,46 @@
 :root {
-  /* Monopoly brand colors */
-  --monopoly-green: #1B5E20;
-  --monopoly-red: #D32F2F;
-  --monopoly-blue: #1A237E;
-  --monopoly-cream: #FFF8E1;
-  --monopoly-gold: #FFD600;
-  --monopoly-dark: #1A1A1A;
+  /* Dark base */
+  --bg-primary: #0a0e1a;
+  --bg-secondary: #111827;
+  --bg-card: rgba(255, 255, 255, 0.04);
 
-  /* Property colors */
+  /* Accent colors */
+  --accent-cyan: #00d4ff;
+  --accent-violet: #a855f7;
+  --accent-magenta: #ec4899;
+  --accent-gold: #fbbf24;
+  --accent-lime: #84cc16;
+  --accent-orange: #f97316;
+  --accent-red: #ef4444;
+  --accent-green: #22c55e;
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, #00d4ff, #a855f7);
+  --gradient-gold: linear-gradient(135deg, #fbbf24, #f59e0b);
+  --gradient-danger: linear-gradient(135deg, #ef4444, #dc2626);
+  --gradient-success: linear-gradient(135deg, #22c55e, #16a34a);
+  --gradient-bg: radial-gradient(ellipse at 20% 50%, rgba(0, 212, 255, 0.08) 0%, transparent 50%),
+                 radial-gradient(ellipse at 80% 20%, rgba(168, 85, 247, 0.08) 0%, transparent 50%),
+                 radial-gradient(ellipse at 50% 80%, rgba(236, 72, 153, 0.05) 0%, transparent 50%),
+                 var(--bg-primary);
+
+  /* Glass */
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-blur: 12px;
+
+  /* Text */
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+
+  /* Glow */
+  --glow-cyan: 0 0 20px rgba(0, 212, 255, 0.3);
+  --glow-violet: 0 0 20px rgba(168, 85, 247, 0.3);
+  --glow-gold: 0 0 20px rgba(251, 191, 36, 0.3);
+  --glow-red: 0 0 20px rgba(239, 68, 68, 0.3);
+
+  /* Property colors (unchanged) */
   --color-brown: #8B4513;
   --color-light-blue: #87CEEB;
   --color-pink: #D81B60;
@@ -19,17 +52,17 @@
   --color-railroad: #424242;
   --color-utility: #78909C;
 
-  /* UI */
-  --color-bg: var(--monopoly-cream);
-  --color-text: var(--monopoly-dark);
-  --color-text-light: #F5F0E1;
-  --color-card-back: var(--monopoly-green);
-  --color-board: #C8E6C9;
+  /* Legacy aliases for compatibility */
+  --monopoly-green: #22c55e;
+  --monopoly-red: #ef4444;
+  --monopoly-blue: #3b82f6;
+  --monopoly-gold: #fbbf24;
+  --monopoly-dark: #0a0e1a;
 
   /* Card */
   --card-width: 120px;
   --card-height: 175px;
-  --card-radius: 10px;
+  --card-radius: 12px;
 
   /* Spacing */
   --gap-sm: 4px;

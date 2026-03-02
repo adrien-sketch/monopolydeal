@@ -19,7 +19,7 @@ export function ColorPickerModal({ colors, title, onSelect }: ColorPickerModalPr
               className="modal__btn"
               style={{
                 background: `var(--color-${cssColorVar(color)})`,
-                color: ['yellow', 'lightBlue'].includes(color) ? '#333' : 'white',
+                color: ['yellow', 'lightBlue'].includes(color) ? '#0a0e1a' : 'white',
                 minWidth: '100px',
               }}
               onClick={() => onSelect(color)}

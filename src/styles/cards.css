@@ -3,39 +3,42 @@
   width: var(--card-width);
   height: var(--card-height);
   border-radius: var(--card-radius);
-  border: 2.5px solid #6b5b4a;
-  background: white;
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  background: var(--bg-secondary);
   display: flex;
   flex-direction: column;
   overflow: hidden;
   font-size: 0.75rem;
   cursor: pointer;
-  transition: transform 0.15s, box-shadow 0.15s;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   position: relative;
   flex-shrink: 0;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
 .card:hover:not(.card--disabled):not(.card--face-down) {
-  transform: translateY(-10px);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.25);
+  transform: translateY(-12px) scale(1.03);
+  box-shadow: 0 12px 32px rgba(0, 212, 255, 0.2), 0 4px 16px rgba(0, 0, 0, 0.5);
+  border-color: rgba(0, 212, 255, 0.3);
   z-index: 10;
 }
 
 .card--selected {
-  transform: translateY(-14px) !important;
-  box-shadow: 0 0 0 3px var(--monopoly-gold), 0 10px 20px rgba(0,0,0,0.3) !important;
+  transform: translateY(-14px) scale(1.03) !important;
+  box-shadow: 0 0 0 2px var(--accent-gold), var(--glow-gold) !important;
+  border-color: var(--accent-gold) !important;
 }
 
 .card--disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
+  filter: grayscale(0.3);
 }
 
 /* ===== Face Down ===== */
 .card--face-down {
-  background: var(--color-card-back);
-  border-color: #0d3d12;
+  background: #1a2040;
+  border-color: rgba(0, 212, 255, 0.12);
   cursor: default;
 }
 
@@ -49,18 +52,21 @@
       45deg,
       transparent,
       transparent 6px,
-      rgba(255,255,255,0.06) 6px,
-      rgba(255,255,255,0.06) 12px
+      rgba(0, 212, 255, 0.03) 6px,
+      rgba(0, 212, 255, 0.03) 12px
     ),
-    var(--color-card-back);
+    linear-gradient(135deg, #1a2040, #111827);
 }
 
 .card__back-logo {
-  color: var(--monopoly-gold);
-  font-family: Georgia, serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 2.5rem;
-  font-weight: bold;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+  font-weight: 900;
+  background: linear-gradient(135deg, #00d4ff, #a855f7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 2px 8px rgba(0, 212, 255, 0.3));
 }
 
 /* ===== Small Card ===== */
@@ -68,7 +74,7 @@
   width: 68px;
   height: 98px;
   font-size: 0.5rem;
-  border-width: 1.5px;
+  border-width: 1px;
 }
 
 .card--small .card__badge {
@@ -157,14 +163,14 @@
   position: absolute;
   top: 4px;
   right: 5px;
-  background: white;
-  border: 2px solid #333;
+  background: rgba(0, 14, 26, 0.85);
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
   border-radius: 10px;
   font-size: 0.55rem;
   font-weight: 800;
   padding: 2px 5px;
   z-index: 2;
-  color: #333;
+  color: #f1f5f9;
   line-height: 1.2;
 }
 
@@ -172,7 +178,7 @@
    PROPERTY CARDS
    ================================================ */
 .card__inner--property {
-  background: #f5f0e8;
+  background: #1a2040;
 }
 
 .card__prop-header {
@@ -187,11 +193,12 @@
 
 .card__prop-name {
   color: white;
+  font-family: 'Poppins', sans-serif;
   font-weight: 800;
   font-size: 0.6rem;
   letter-spacing: 0.3px;
   line-height: 1.2;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
   word-break: break-word;
 }
 
@@ -207,7 +214,7 @@
 .card__rent-label {
   font-weight: 800;
   font-size: 0.65rem;
-  color: #333;
+  color: #94a3b8;
   text-align: right;
   margin-bottom: 2px;
   letter-spacing: 0.5px;
@@ -222,12 +229,12 @@
 }
 
 .card__rent-row--complete {
-  border-bottom: 2px solid var(--monopoly-gold);
+  border-bottom: 2px solid var(--accent-gold);
   padding-bottom: 2px;
 }
 
 .card__rent-count {
-  background: #ddd;
+  background: rgba(255, 255, 255, 0.08);
   border-radius: 3px;
   width: 18px;
   height: 16px;
@@ -236,19 +243,19 @@
   justify-content: center;
   font-weight: 700;
   font-size: 0.5rem;
-  color: #555;
+  color: #64748b;
 }
 
 .card__rent-amount {
   font-weight: 700;
   font-size: 0.55rem;
-  color: #333;
+  color: #f1f5f9;
 }
 
 .card__rent-complete {
   font-size: 0.4rem;
   font-weight: 700;
-  color: #888;
+  color: #64748b;
   text-align: center;
   letter-spacing: 0.5px;
   margin-top: 2px;
@@ -266,7 +273,7 @@
   font-size: 0.42rem;
   font-weight: 600;
   text-align: center;
-  color: #555;
+  color: #64748b;
   line-height: 1.15;
 }
 
@@ -274,8 +281,8 @@
    ACTION CARDS
    ================================================ */
 .card__inner--action {
-  background: #f5ede0;
-  box-shadow: inset 0 0 0 4px #e8dcc8, inset 0 0 0 6px #c4b89a;
+  background: #1a2040;
+  box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.04), inset 0 0 0 5px rgba(255, 255, 255, 0.02);
 }
 
 .card__action-header {
@@ -283,7 +290,7 @@
   font-weight: 800;
   font-size: 0.55rem;
   letter-spacing: 1.5px;
-  color: #8b7d6b;
+  color: #64748b;
   padding: 6px 4px 2px;
   text-transform: uppercase;
 }
@@ -303,32 +310,37 @@
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  border: 2.5px solid #333;
+  border: 2px solid rgba(255, 255, 255, 0.15);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: white;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 12px rgba(0, 212, 255, 0.15);
+  transition: box-shadow 0.2s ease;
+}
+
+.card:hover .card__action-circle {
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
 }
 
 .card__action-icon {
   font-size: 1.1rem;
   font-weight: 800;
-  color: #333;
+  color: var(--accent-cyan);
   line-height: 1;
 }
 
 .card__action-name {
   font-weight: 800;
   font-size: 0.7rem;
-  color: #333;
+  color: #f1f5f9;
   letter-spacing: 0.3px;
   line-height: 1.2;
 }
 
 .card__action-desc {
   font-size: 0.45rem;
-  color: #777;
+  color: #64748b;
   line-height: 1.25;
   max-width: 100px;
 }
@@ -338,11 +350,11 @@
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  border: 2.5px solid #333;
+  border: 2px solid rgba(255, 255, 255, 0.15);
   overflow: hidden;
   display: flex;
   flex-direction: row;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
 }
 
 .card__rent-half {
@@ -355,8 +367,8 @@
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  border: 2.5px solid #333;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
   background: conic-gradient(
     var(--color-brown) 0deg,
     var(--color-light-blue) 36deg,
@@ -376,14 +388,14 @@
    WILDCARD CARDS
    ================================================ */
 .card__inner--wildcard-rainbow {
-  background: #f5ede0;
-  box-shadow: inset 0 0 0 4px #e8dcc8, inset 0 0 0 6px #c4b89a;
+  background: #1a2040;
+  box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.04), inset 0 0 0 5px rgba(255, 255, 255, 0.02);
 }
 
 .card__inner--wildcard-rainbow .card__action-header {
   font-size: 0.55rem;
   padding: 6px 4px 2px;
-  color: #8b7d6b;
+  color: #64748b;
   letter-spacing: 1.5px;
   font-weight: 800;
 }
@@ -411,7 +423,7 @@
   color: white;
   font-weight: 800;
   font-size: 0.6rem;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -420,9 +432,9 @@
   text-align: center;
   font-weight: 800;
   font-size: 0.5rem;
-  color: #666;
+  color: #64748b;
   padding: 3px;
-  background: rgba(255,255,255,0.95);
+  background: rgba(17, 24, 39, 0.9);
   letter-spacing: 0.5px;
 }
 
@@ -441,29 +453,31 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: white;
-  border: 3px solid #333;
+  background: rgba(0, 0, 0, 0.3);
+  border: 2.5px solid rgba(255, 255, 255, 0.25);
   border-radius: 50%;
   width: 60px;
   height: 60px;
   justify-content: center;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
 }
 
 .card__money-m {
-  font-family: Georgia, serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 0.65rem;
   font-weight: 800;
-  color: #333;
+  color: white;
   line-height: 1;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 }
 
 .card__money-amount {
-  font-family: Georgia, serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 1.6rem;
   font-weight: 800;
-  color: #333;
+  color: white;
   line-height: 1;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 
 .card__money-corner-tl {
@@ -472,7 +486,7 @@
   left: 7px;
   font-size: 0.55rem;
   font-weight: 800;
-  color: rgba(0,0,0,0.5);
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .card__money-corner-br {
@@ -481,44 +495,61 @@
   right: 7px;
   font-size: 0.55rem;
   font-weight: 800;
-  color: rgba(0,0,0,0.5);
+  color: rgba(255, 255, 255, 0.5);
   transform: rotate(180deg);
 }
 
-/* Money color themes - bold and saturated */
+/* Money color themes */
 .card__inner--money-1 {
-  background: linear-gradient(135deg, #f9eea0 0%, #f0d860 100%);
-  box-shadow: inset 0 0 0 5px rgba(200,170,50,0.3);
+  background: linear-gradient(135deg, #b8960a 0%, #d4a017 50%, #c49000 100%);
 }
 
 .card__inner--money-2 {
-  background: linear-gradient(135deg, #f0c8a0 0%, #e0a070 100%);
-  box-shadow: inset 0 0 0 5px rgba(180,120,60,0.3);
+  background: linear-gradient(135deg, #a06020 0%, #c07830 50%, #b06828 100%);
 }
 
 .card__inner--money-3 {
-  background: linear-gradient(135deg, #c8e8a0 0%, #90c860 100%);
-  box-shadow: inset 0 0 0 5px rgba(100,160,50,0.3);
+  background: linear-gradient(135deg, #3a8a30 0%, #4aa840 50%, #3a9030 100%);
 }
 
 .card__inner--money-4 {
-  background: linear-gradient(135deg, #b8d0e8 0%, #80a8d0 100%);
-  box-shadow: inset 0 0 0 5px rgba(80,120,170,0.3);
+  background: linear-gradient(135deg, #2868a8 0%, #3880c0 50%, #2870b0 100%);
 }
 
 .card__inner--money-5 {
-  background: linear-gradient(135deg, #d8b8e0 0%, #b880c8 100%);
-  box-shadow: inset 0 0 0 5px rgba(140,80,160,0.3);
+  background: linear-gradient(135deg, #8040a0 0%, #9858b8 50%, #8848a8 100%);
 }
 
 .card__inner--money-10 {
-  background: linear-gradient(135deg, #f0d050 0%, #d8a820 100%);
-  box-shadow: inset 0 0 0 5px rgba(180,140,20,0.4);
+  background: linear-gradient(135deg, #b8860b 0%, #daa520 50%, #cd950c 100%);
+  box-shadow: inset 0 0 0 4px rgba(255, 215, 0, 0.2);
 }
 .card__inner--money-10 .card__money-value {
-  border-color: #8b6914;
+  border-color: rgba(255, 215, 0, 0.4);
 }
-.card__inner--money-10 .card__money-corner-tl,
-.card__inner--money-10 .card__money-corner-br {
-  color: rgba(100,70,0,0.6);
+
+/* ===== Play as Money Button ===== */
+.card__play-as-money {
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.55rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  white-space: nowrap;
+  z-index: 5;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.card__play-as-money:hover {
+  transform: translateX(-50%) translateY(-2px);
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
 }

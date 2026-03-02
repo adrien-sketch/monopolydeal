@@ -51,7 +51,7 @@ export function PaymentModal({ amount, reason, player, onPay }: PaymentModalProp
         <p style={{ marginBottom: '12px' }}>
           <strong>{reason}</strong> — Vous devez payer <strong>{amount}M</strong>
         </p>
-        <p style={{ fontSize: '0.8rem', color: '#666', marginBottom: '16px' }}>
+        <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '16px' }}>
           Sélectionné : {totalSelected}M / {amount}M
         </p>
 

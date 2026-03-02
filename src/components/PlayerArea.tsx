@@ -13,7 +13,7 @@ export function PlayerArea({ player, isOpponent }: PlayerAreaProps) {
   const activeColors = PROPERTY_COLORS.filter(c => player.properties[c].length > 0)
 
   return (
-    <div style={{ display: 'flex', gap: '12px', flex: 1, alignItems: 'flex-start', flexWrap: 'wrap' }}>
+    <div className="player-area__layout">
       {/* Property sets */}
       <div className="property-area">
         {activeColors.map(color => {
@@ -35,13 +35,13 @@ export function PlayerArea({ player, isOpponent }: PlayerAreaProps) {
           )
         })}
         {activeColors.length === 0 && (
-          <span style={{ fontSize: '0.75rem', color: '#aaa', padding: '8px' }}>Pas de propriétés</span>
+          <span className="property-area__empty">Pas de propriétés</span>
         )}
       </div>
 
       {/* Bank */}
       <div className="bank">
-        <span style={{ fontSize: '0.7rem', color: '#888', fontWeight: 600 }}>Banque</span>
+        <span className="bank__label">Banque</span>
         <span className="bank__total">{getTotalBankValue(player)}M</span>
         {!isOpponent && player.bank.length > 0 && (
           <div className="bank__cards">
@@ -49,7 +49,7 @@ export function PlayerArea({ player, isOpponent }: PlayerAreaProps) {
               <Card key={card.id} card={card} small />
             ))}
             {player.bank.length > 5 && (
-              <span style={{ fontSize: '0.6rem', color: '#888' }}>+{player.bank.length - 5}</span>
+              <span className="bank__overflow">+{player.bank.length - 5}</span>
             )}
           </div>
         )}
