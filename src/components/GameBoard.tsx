@@ -275,6 +275,18 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
      (state.pendingAction.depth % 2 !== 0 && state.pendingAction.challenger === 'human'))
   const showDiscard = state.pendingAction?.type === 'discard' && state.pendingAction.player === 'human'
 
+  const humanHasJSN = state.players.human.hand.some(c => c.actionType === 'justSayNo')
+
+  // Auto-accept when human has no Just Say No card (skip the modal)
+  useEffect(() => {
+    if (showJustSayNo && !humanHasJSN) {
+      const t = setTimeout(() => {
+        dispatch({ type: 'ACCEPT_ACTION' })
+      }, 400)
+      return () => clearTimeout(t)
+    }
+  }, [showJustSayNo, humanHasJSN, dispatch])
+
   return (
     <div className="game-board">
       {/* Opponent area */}
@@ -391,9 +403,9 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
           onSelect={(color) => dispatch({ type: 'SELECT_SET', color })}
         />
       )}
-      {showJustSayNo && (
+      {showJustSayNo && humanHasJSN && (
         <JustSayNoModal
-          hasCard={state.players.human.hand.some(c => c.actionType === 'justSayNo')}
+          hasCard={true}
           onPlay={() => dispatch({ type: 'PLAY_JUST_SAY_NO' })}
           onAccept={() => dispatch({ type: 'ACCEPT_ACTION' })}
         />
