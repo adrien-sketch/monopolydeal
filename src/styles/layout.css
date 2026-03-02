@@ -250,25 +250,43 @@
   background-clip: text;
 }
 
-.bank__cards {
+.bank__denominations {
   display: flex;
-  flex-direction: column;
-  max-height: 100px;
-  overflow-y: auto;
+  flex-wrap: wrap;
+  gap: 3px;
+  justify-content: center;
+  max-width: 120px;
 }
 
-.bank__cards .card--small {
-  margin-top: -58px;
-}
-
-.bank__cards .card--small:first-child {
-  margin-top: 0;
-}
-
-.bank__overflow {
+.bank__denom {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px 5px;
+  border-radius: 10px;
   font-size: 0.6rem;
-  color: var(--text-muted);
+  font-weight: 700;
+  line-height: 1;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
+
+.bank__denom-value {
+  color: #fff;
+}
+
+.bank__denom-count {
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 600;
+}
+
+.bank__denom--10 { background: linear-gradient(135deg, #B8860B, #DAA520); }
+.bank__denom--5 { background: linear-gradient(135deg, #6A1B9A, #8E24AA); }
+.bank__denom--4 { background: linear-gradient(135deg, #1565C0, #1E88E5); }
+.bank__denom--3 { background: linear-gradient(135deg, #2E7D32, #43A047); }
+.bank__denom--2 { background: linear-gradient(135deg, #8B6914, #A67C1A); }
+.bank__denom--1 { background: linear-gradient(135deg, #C9A83F, #E8C84A); }
+.bank__denom--1 .bank__denom-value,
+.bank__denom--1 .bank__denom-count { color: #4a3800; }
 
 /* ===== Turn Controls ===== */
 .turn-controls {

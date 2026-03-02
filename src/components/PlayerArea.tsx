@@ -1,15 +1,24 @@
-import type { PlayerState, PropertyColor } from '../game/types'
+import type { Card as CardType, PlayerState, PropertyColor } from '../game/types'
 import { PROPERTY_COLORS } from '../game/types'
 import { COLOR_NAMES, SET_SIZES } from '../game/constants'
 import { isSetComplete, getTotalBankValue } from '../game/sets'
 import { Card } from './Card'
 
-interface PlayerAreaProps {
-  player: PlayerState
-  isOpponent?: boolean
+function getBankDenominations(bank: CardType[]) {
+  const counts = new Map<number, number>()
+  for (const card of bank) {
+    counts.set(card.bankValue, (counts.get(card.bankValue) || 0) + 1)
+  }
+  return Array.from(counts.entries())
+    .sort((a, b) => b[0] - a[0])
+    .map(([value, count]) => ({ value, count }))
 }
 
-export function PlayerArea({ player, isOpponent }: PlayerAreaProps) {
+interface PlayerAreaProps {
+  player: PlayerState
+}
+
+export function PlayerArea({ player }: PlayerAreaProps) {
   const activeColors = PROPERTY_COLORS.filter(c => player.properties[c].length > 0)
 
   return (
@@ -43,14 +52,14 @@ export function PlayerArea({ player, isOpponent }: PlayerAreaProps) {
       <div className="bank">
         <span className="bank__label">Banque</span>
         <span className="bank__total">{getTotalBankValue(player)}M</span>
-        {!isOpponent && player.bank.length > 0 && (
-          <div className="bank__cards">
-            {player.bank.slice(-5).map(card => (
-              <Card key={card.id} card={card} small />
+        {player.bank.length > 0 && (
+          <div className="bank__denominations">
+            {getBankDenominations(player.bank).map(({ value, count }) => (
+              <div key={value} className={`bank__denom bank__denom--${value}`}>
+                <span className="bank__denom-value">{value}M</span>
+                <span className="bank__denom-count">×{count}</span>
+              </div>
             ))}
-            {player.bank.length > 5 && (
-              <span className="bank__overflow">+{player.bank.length - 5}</span>
-            )}
           </div>
         )}
       </div>

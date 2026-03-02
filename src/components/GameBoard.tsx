@@ -305,7 +305,7 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
           </div>
           <span className="opponent-area__count">{state.players.bot.hand.length} cartes</span>
         </div>
-        <PlayerArea player={state.players.bot} isOpponent />
+        <PlayerArea player={state.players.bot} />
       </div>
 
       {/* Middle area */}
