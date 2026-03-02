@@ -30,27 +30,65 @@ const ACTION_DESCRIPTIONS: Record<string, string> = {
   hotel: 'Ajoutez sur une maison. +4M de loyer.',
 }
 
+function getActionColor(actionType: string): string {
+  const colors: Record<string, string> = {
+    passGo: '#2E7D32',
+    dealBreaker: '#1565C0',
+    slyDeal: '#1565C0',
+    forcedDeal: '#1565C0',
+    debtCollector: '#2E7D32',
+    birthday: '#C62828',
+    justSayNo: '#C62828',
+    doubleTheRent: '#E65100',
+    house: '#2E7D32',
+    hotel: '#C62828',
+  }
+  return colors[actionType] || '#1565C0'
+}
+
+function getRentBorderColor(card: CardType): string {
+  if (card.colors?.length === 10) return '#E65100'
+  if (card.colors && card.colors.length >= 1) {
+    return `var(--color-${cssColorVar(card.colors[0])})`
+  }
+  return '#888'
+}
+
 export function Card({ card, faceDown, small, selected, disabled, onClick, displayColor }: CardProps) {
+  const isActionBorder = !faceDown && (card.type === 'action' || card.type === 'rent')
   const classes = [
     'card',
     faceDown && 'card--face-down',
     small && 'card--small',
     selected && 'card--selected',
     disabled && 'card--disabled',
+    isActionBorder && 'card--action-border',
   ].filter(Boolean).join(' ')
+
+  const cardStyle: React.CSSProperties = {}
+  if (isActionBorder) {
+    if (card.type === 'action') {
+      cardStyle.borderColor = getActionColor(card.actionType!)
+    } else if (card.type === 'rent') {
+      cardStyle.borderColor = getRentBorderColor(card)
+    }
+  }
 
   if (faceDown) {
     return (
       <div className={classes} title="">
         <div className="card__back">
-          <span className="card__back-logo">M</span>
+          <div className="card__back-stripe">
+            <span className="card__back-title">MONOPOLY</span>
+            <span className="card__back-subtitle">DEAL</span>
+          </div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className={classes} onClick={disabled ? undefined : onClick} title={card.name}>
+    <div className={classes} onClick={disabled ? undefined : onClick} title={card.name} style={cardStyle}>
       {card.type === 'property' && <PropertyCard card={card} displayColor={displayColor} small={small} />}
       {card.type === 'wildcard' && <WildcardCard card={card} displayColor={displayColor} small={small} />}
       {card.type === 'action' && <ActionCard card={card} small={small} />}
@@ -61,7 +99,21 @@ export function Card({ card, faceDown, small, selected, disabled, onClick, displ
 }
 
 function ValueBadge({ value }: { value: number }) {
-  return <span className="card__badge">M{value}M</span>
+  return <span className="card__badge">{value}M</span>
+}
+
+function SetIndicator({ color, setSize }: { color: PropertyColor; setSize: number }) {
+  return (
+    <div className="card__set-indicator">
+      {Array.from({ length: setSize }, (_, i) => (
+        <div
+          key={i}
+          className="card__set-dot"
+          style={{ background: `var(--color-${cssColorVar(color)})` }}
+        />
+      ))}
+    </div>
+  )
 }
 
 function PropertyCard({ card, displayColor, small }: { card: CardType; displayColor?: PropertyColor; small?: boolean }) {
@@ -71,21 +123,24 @@ function PropertyCard({ card, displayColor, small }: { card: CardType; displayCo
   return (
     <div className="card__inner card__inner--property">
       <div className="card__prop-header" style={{ background: `var(--color-${cssColorVar(color)})` }}>
-        <ValueBadge value={card.bankValue} />
         <span className="card__prop-name">{card.name.toUpperCase()}</span>
+        <ValueBadge value={card.bankValue} />
       </div>
       {!small && (
-        <div className="card__rent-table">
-          <span className="card__rent-label">LOYER</span>
-          {rentValues.map((rent, i) => (
-            <div key={i} className={`card__rent-row ${i === rentValues.length - 1 ? 'card__rent-row--complete' : ''}`}>
-              <span className="card__rent-count">{i + 1}</span>
-              <span className="card__rent-amount">M{rent}M</span>
+        <div className="card__prop-body">
+          <SetIndicator color={color} setSize={setSize} />
+          <div className="card__rent-table">
+            <div className="card__rent-header-row">
+              <span>PROPRIÉTÉS</span>
+              <span>LOYER</span>
             </div>
-          ))}
-          {setSize === rentValues.length && (
-            <span className="card__rent-complete">GROUPE COMPLET</span>
-          )}
+            {rentValues.map((rent, i) => (
+              <div key={i} className={`card__rent-row ${i === rentValues.length - 1 ? 'card__rent-row--complete' : ''}`}>
+                <span className="card__rent-count">{i + 1}</span>
+                <span className="card__rent-amount">{rent}M</span>
+              </div>
+            ))}
+          </div>
         </div>
       )}
       {small && (
@@ -100,13 +155,12 @@ function PropertyCard({ card, displayColor, small }: { card: CardType; displayCo
 function WildcardCard({ card, displayColor, small }: { card: CardType; displayColor?: PropertyColor; small?: boolean }) {
   const isRainbow = card.colors?.length === 10
   if (displayColor) {
-    // Displayed in a property set — look like a property card of that color
     return <PropertyCard card={{ ...card, name: 'Joker' }} displayColor={displayColor} small={small} />
   }
   if (isRainbow) {
     return (
       <div className="card__inner card__inner--wildcard-rainbow">
-        <div className="card__action-header">PROPRIÉTÉ JOKER</div>
+        <div className="card__wild-rainbow-header">PROPRIÉTÉ JOKER</div>
         <div className="card__body">
           <div className="card__rainbow-circle" />
           <span className="card__action-name">JOKER</span>
@@ -115,7 +169,6 @@ function WildcardCard({ card, displayColor, small }: { card: CardType; displayCo
       </div>
     )
   }
-  // Dual-color wildcard
   const [color1, color2] = card.colors || []
   return (
     <div className="card__inner card__inner--wildcard-dual">
@@ -134,15 +187,16 @@ function WildcardCard({ card, displayColor, small }: { card: CardType; displayCo
 }
 
 function ActionCard({ card, small }: { card: CardType; small?: boolean }) {
+  const actionColor = getActionColor(card.actionType!)
   return (
     <div className="card__inner card__inner--action">
-      <div className="card__action-header">CARTE ACTION</div>
+      <div className="card__action-header" style={{ color: actionColor }}>CARTE ACTION</div>
       <ValueBadge value={card.bankValue} />
       <div className="card__body">
-        <div className="card__action-circle">
+        <div className="card__action-circle" style={{ borderColor: actionColor, color: actionColor }}>
           <span className="card__action-icon">{getActionIcon(card.actionType!)}</span>
         </div>
-        <span className="card__action-name">{card.name.toUpperCase()}</span>
+        <span className="card__action-name" style={{ color: actionColor }}>{card.name.toUpperCase()}</span>
         {!small && card.actionType && (
           <span className="card__action-desc">{ACTION_DESCRIPTIONS[card.actionType]}</span>
         )}
@@ -183,10 +237,11 @@ function MoneyCard({ card }: { card: CardType }) {
     <div className={`card__inner card__inner--money ${moneyClass}`}>
       <div className="card__money-value">
         <span className="card__money-m">M</span>
-        <span className="card__money-amount">{card.bankValue}M</span>
+        <span className="card__money-amount">{card.bankValue}</span>
+        <span className="card__money-m">MILLIONS</span>
       </div>
-      <div className="card__money-corner-tl">M{card.bankValue}M</div>
-      <div className="card__money-corner-br">M{card.bankValue}M</div>
+      <div className="card__money-corner-tl">{card.bankValue}M</div>
+      <div className="card__money-corner-br">{card.bankValue}M</div>
     </div>
   )
 }

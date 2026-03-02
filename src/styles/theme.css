@@ -62,7 +62,7 @@
   /* Card */
   --card-width: 120px;
   --card-height: 175px;
-  --card-radius: 12px;
+  --card-radius: 10px;
 
   /* Spacing */
   --gap-sm: 4px;
