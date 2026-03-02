@@ -412,9 +412,10 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
           onSelect={(color) => dispatch({ type: 'SELECT_SET', color })}
         />
       )}
-      {showJustSayNo && humanHasJSN && (
+      {showJustSayNo && humanHasJSN && state.pendingAction?.type === 'justSayNo' && (
         <JustSayNoModal
           hasCard={true}
+          originalAction={state.pendingAction.originalAction}
           onPlay={() => dispatch({ type: 'PLAY_JUST_SAY_NO' })}
           onAccept={() => dispatch({ type: 'ACCEPT_ACTION' })}
         />

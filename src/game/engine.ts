@@ -406,7 +406,7 @@ export function resolveJustSayNo(state: GameState, playsJSN: boolean): GameState
       // Challenger accepted (didn't counter), action is blocked
       s.pendingAction = null
       s.turnPhase = 'play'
-      s.actionLog.push({ player: pending.challenger, message: `n'a pas contré le Joker.` })
+      s.actionLog.push({ player: pending.challenger, message: `n'a pas contré le Juste dire non.` })
     }
     return s
   }
@@ -419,7 +419,7 @@ export function resolveJustSayNo(state: GameState, playsJSN: boolean): GameState
 
   const [jsnCard] = player.hand.splice(jsnIdx, 1)
   s.discardPile.push(jsnCard)
-  s.actionLog.push({ player: jsnPlayer, message: `joue Joker !` })
+  s.actionLog.push({ player: jsnPlayer, message: `joue Juste dire non !` })
 
   // Check if other side can counter
   const otherPlayer = jsnPlayer === pending.target ? pending.challenger : pending.target

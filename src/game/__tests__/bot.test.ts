@@ -88,7 +88,7 @@ describe('shouldBotPlayJustSayNo', () => {
   it('blocks Deal Breaker', () => {
     const state = makeBotTurnState()
     state.players.bot.hand.push({
-      id: 'bot-jsn', type: 'action', name: 'Joker !',
+      id: 'bot-jsn', type: 'action', name: 'Juste dire non',
       bankValue: 4, actionType: 'justSayNo',
     })
     state.pendingAction = {
@@ -109,7 +109,7 @@ describe('shouldBotPlayJustSayNo', () => {
   it('accepts small debts', () => {
     const state = makeBotTurnState()
     state.players.bot.hand.push({
-      id: 'bot-jsn', type: 'action', name: 'Joker !',
+      id: 'bot-jsn', type: 'action', name: 'Juste dire non',
       bankValue: 4, actionType: 'justSayNo',
     })
     state.pendingAction = {

@@ -142,7 +142,7 @@ describe('resolveJustSayNo', () => {
     const state = makeTestState()
     const s = drawCards(state)
     // Give bot a JSN card
-    const jsnCard: Card = { id: 'bot-jsn', type: 'action', name: 'Joker !', bankValue: 4, actionType: 'justSayNo' }
+    const jsnCard: Card = { id: 'bot-jsn', type: 'action', name: 'Juste dire non', bankValue: 4, actionType: 'justSayNo' }
     s.players.bot.hand.push(jsnCard)
     // No JSN for human
     s.players.human.hand = s.players.human.hand.filter(c => c.actionType !== 'justSayNo')

@@ -91,8 +91,8 @@ function createAllCards(): Card[] {
   for (let i = 0; i < 3; i++) cards.push(action(`action-debtCollector-${i}`, 'Agent de Recouvrement', 'debtCollector'))
   // 2x C'est mon Anniversaire !
   for (let i = 0; i < 2; i++) cards.push(action(`action-birthday-${i}`, 'C\'est mon Anniversaire !', 'birthday'))
-  // 3x Joker ! (Non Merci)
-  for (let i = 0; i < 3; i++) cards.push(action(`action-justSayNo-${i}`, 'Joker !', 'justSayNo'))
+  // 3x Juste dire non
+  for (let i = 0; i < 3; i++) cards.push(action(`action-justSayNo-${i}`, 'Juste dire non', 'justSayNo'))
   // 2x Double Loyer
   for (let i = 0; i < 2; i++) cards.push(action(`action-doubleTheRent-${i}`, 'Double Loyer', 'doubleTheRent'))
   // 3x Maison
