@@ -47,6 +47,23 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
   const [showEndTurnConfirm, setShowEndTurnConfirm] = useState(false)
   const [previewCard, setPreviewCard] = useState<CardType | null>(null)
   const isMobile = useIsMobile()
+  const [drawnCardIds, setDrawnCardIds] = useState<Set<string>>(new Set())
+  const prevHandIdsRef = useRef<Set<string>>(new Set(state.players.human.hand.map(c => c.id)))
+
+  // Detect newly drawn cards and trigger animation
+  useEffect(() => {
+    const currentIds = new Set(state.players.human.hand.map(c => c.id))
+    const newIds = new Set<string>()
+    for (const id of currentIds) {
+      if (!prevHandIdsRef.current.has(id)) newIds.add(id)
+    }
+    prevHandIdsRef.current = currentIds
+    if (newIds.size > 0) {
+      setDrawnCardIds(newIds)
+      const t = setTimeout(() => setDrawnCardIds(new Set()), 500)
+      return () => clearTimeout(t)
+    }
+  }, [state.players.human.hand])
 
   // Check for game over
   useEffect(() => {
@@ -388,7 +405,7 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
             return (
               <div
                 key={card.id}
-                className="hand__card"
+                className={`hand__card${drawnCardIds.has(card.id) ? ' hand__card--drawn' : ''}`}
                 style={{ marginLeft: i === 0 ? 0 : ml }}
                 onClick={isMobile ? () => setPreviewCard(card) : undefined}
               >
