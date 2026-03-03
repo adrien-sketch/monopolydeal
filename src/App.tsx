@@ -8,9 +8,9 @@ import './App.css'
 type Screen = 'start' | 'game' | 'gameOver'
 
 const DIFFICULTY_OPTIONS: { value: Difficulty; label: string; stars: string; description: string }[] = [
-  { value: 'beginner', label: 'Débutant', stars: '\u2605', description: 'Bot prudent, coups simples' },
-  { value: 'intermediate', label: 'Intermédiaire', stars: '\u2605\u2605', description: 'Bot stratégique, bons réflexes' },
-  { value: 'advanced', label: 'Expert', stars: '\u2605\u2605\u2605', description: 'Bot expert, combos et anticipation' },
+  { value: 'beginner', label: 'Débutant', stars: '\u2605', description: 'Monobot prudent, coups simples' },
+  { value: 'intermediate', label: 'Intermédiaire', stars: '\u2605\u2605', description: 'Monobot stratégique, bons réflexes' },
+  { value: 'advanced', label: 'Expert', stars: '\u2605\u2605\u2605', description: 'Monobot expert, combos et anticipation' },
 ]
 
 function App() {
@@ -76,7 +76,7 @@ function App() {
             <span className="start-screen__title-sub">DEAL</span>
           </h1>
 
-          <p className="start-screen__subtitle">1v1 contre un bot stratégique</p>
+          <p className="start-screen__subtitle">Défie Monobot en 1v1 !</p>
 
           <div className="decorative-divider">
             <span className="decorative-divider__line" />
@@ -85,7 +85,7 @@ function App() {
           </div>
 
           <div className="difficulty-selector">
-            <p className="difficulty-selector__label">Difficulté du bot</p>
+            <p className="difficulty-selector__label">Difficulté de Monobot</p>
             <div className="difficulty-selector__options">
               {DIFFICULTY_OPTIONS.map(opt => (
                 <button
@@ -138,7 +138,7 @@ function App() {
             {playerWon ? 'Victoire !' : 'Défaite...'}
           </h1>
           <p className="end-screen__subtitle">
-            {playerWon ? 'Vous avez complété 3 sets !' : 'Le bot a complété 3 sets avant vous.'}
+            {playerWon ? 'Vous avez complété 3 sets !' : 'Monobot a complété 3 sets avant vous.'}
           </p>
           <div className="decorative-divider">
             <span className="decorative-divider__line" />

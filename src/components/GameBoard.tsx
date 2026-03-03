@@ -317,7 +317,7 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
       <div className="opponent-area">
         <div className="opponent-area__info">
           <strong className="opponent-area__name">
-            Bot ({state.difficulty === 'beginner' ? 'Débutant' : state.difficulty === 'intermediate' ? 'Intermédiaire' : 'Expert'})
+            Monobot ({state.difficulty === 'beginner' ? 'Débutant' : state.difficulty === 'intermediate' ? 'Intermédiaire' : 'Expert'})
           </strong>
           <div className="opponent-area__hand-summary">
             <Card
@@ -354,7 +354,7 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
           {/* Turn info */}
           <div className={`turn-controls ${isHumanTurn ? 'turn-controls--human' : 'turn-controls--bot'}`}>
             <span className="turn-controls__info">
-              Tour {state.turnNumber} — {isHumanTurn ? 'Votre tour' : 'Tour du Bot'}
+              Tour {state.turnNumber} — {isHumanTurn ? 'Votre tour' : 'Tour de Monobot'}
               {state.turnPhase === 'play' && ` — ${state.cardsPlayedThisTurn}/3 cartes jouées`}
             </span>
             {isHumanTurn && state.turnPhase === 'draw' && (
@@ -398,7 +398,7 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
                   disabled={!canPlay}
                   playable={canPlay}
                   disabledReason={
-                    !isHumanTurn ? 'C\'est le tour du bot' :
+                    !isHumanTurn ? 'C\'est le tour de Monobot' :
                     state.turnPhase === 'draw' ? 'Vous devez d\'abord piocher' :
                     state.cardsPlayedThisTurn >= 3 ? '3 cartes déjà jouées' :
                     state.pendingAction ? 'Action en cours...' : undefined
@@ -569,7 +569,7 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
               {state.winner === 'human' ? 'Victoire !' : 'Défaite...'}
             </h2>
             <p style={{ color: 'var(--text-secondary)' }}>
-              {state.winner === 'human' ? 'Vous avez 3 sets complets !' : 'Le bot a complété 3 sets avant vous.'}
+              {state.winner === 'human' ? 'Vous avez 3 sets complets !' : 'Monobot a complété 3 sets avant vous.'}
             </p>
           </div>
         </div>

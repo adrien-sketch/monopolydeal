@@ -41,7 +41,7 @@ export function ActionLog({ entries }: { entries: LogEntry[] }) {
         <div key={i} className={`action-log__entry action-log__entry--${entry.player}`}>
           <span className="action-log__icon">{getLogIcon(entry.message)}</span>
           <span>
-            <strong>{entry.player === 'human' ? 'Vous' : 'Bot'}</strong> {entry.message}
+            <strong>{entry.player === 'human' ? 'Vous' : 'Monobot'}</strong> {entry.message}
           </span>
         </div>
       ))}
