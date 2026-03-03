@@ -1,0 +1,690 @@
+/* ===== Card Base — white cards like the physical game ===== */
+.card {
+  width: var(--card-width);
+  height: var(--card-height);
+  border-radius: var(--card-radius);
+  border: 2px solid #c8c8c8;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  position: relative;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.card:hover:not(.card--disabled):not(.card--face-down) {
+  transform: translateY(-12px) scale(1.03);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35), 0 4px 12px rgba(0, 0, 0, 0.2);
+  border-color: #999;
+  z-index: 10;
+}
+
+.card--selected {
+  transform: translateY(-14px) scale(1.03) !important;
+  box-shadow: 0 0 0 3px #DAA520, 0 8px 24px rgba(218, 165, 32, 0.35) !important;
+  border-color: #DAA520 !important;
+}
+
+.card--disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  filter: grayscale(0.3);
+}
+
+/* Playable glow — subtle green pulse when card can be played */
+.card--playable {
+  box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.4), 0 2px 8px rgba(0, 0, 0, 0.2);
+  animation: playableGlow 2s ease-in-out infinite;
+}
+
+@keyframes playableGlow {
+  0%, 100% { box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2); }
+  50% { box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.6), 0 0 12px rgba(46, 125, 50, 0.25), 0 2px 8px rgba(0, 0, 0, 0.2); }
+}
+
+.card--playable:hover {
+  animation: none;
+}
+
+/* Action/Rent cards get a thick colored border on the outer card */
+.card--action-border {
+  border-width: 3.5px;
+}
+
+/* ===== Face Down (Card Back) — navy blue with green "MONOPOLY DEAL" stripe ===== */
+.card--face-down {
+  background: #0d1b2a;
+  border-color: #1b3352;
+  cursor: default;
+}
+
+.card__back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background: #0f1e33;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Inner border frame */
+.card__back::before {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 5px;
+  z-index: 1;
+}
+
+.card__back-stripe {
+  position: absolute;
+  width: 280%;
+  height: 44px;
+  background: linear-gradient(180deg, #4CAF50 0%, #2E7D32 50%, #1B5E20 100%);
+  transform: rotate(-32deg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.3), 0 3px 12px rgba(0, 0, 0, 0.5);
+  z-index: 2;
+}
+
+.card__back-title {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 900;
+  font-size: 0.9rem;
+  color: #ffffff;
+  letter-spacing: 3px;
+  line-height: 1.1;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+.card__back-subtitle {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 900;
+  font-size: 0.6rem;
+  color: #FFD740;
+  letter-spacing: 5px;
+  line-height: 1.1;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+/* ===== Small Card ===== */
+.card--small {
+  width: 54px;
+  height: 76px;
+  font-size: 0.42rem;
+  border-width: 1.5px;
+  border-radius: 6px;
+}
+
+.card--small.card--action-border {
+  border-width: 2.5px;
+}
+
+.card--small .card__badge {
+  font-size: 0.3rem;
+  padding: 0px 2px;
+  top: 2px;
+  right: 2px;
+  min-width: auto;
+  border-width: 1px;
+}
+
+.card--small .card__prop-header {
+  min-height: 18px;
+  padding: 2px 3px;
+}
+
+.card--small .card__prop-name {
+  font-size: 0.33rem;
+  padding-right: 14px;
+}
+
+.card--small .card__action-header {
+  font-size: 0.28rem;
+  padding: 2px;
+  letter-spacing: 0.5px;
+}
+
+.card--small .card__action-name {
+  font-size: 0.38rem;
+}
+
+.card--small .card__action-circle,
+.card--small .card__rent-circle,
+.card--small .card__rainbow-circle {
+  width: 18px;
+  height: 18px;
+  border-width: 1px;
+}
+
+.card--small .card__action-icon {
+  font-size: 0.6rem;
+}
+
+.card--small .card__action-desc {
+  display: none;
+}
+
+.card--small .card__money-value {
+  width: 28px;
+  height: 28px;
+  border-width: 1.5px;
+}
+
+.card--small .card__money-amount {
+  font-size: 0.95rem;
+}
+
+.card--small .card__money-m {
+  font-size: 0.28rem;
+}
+
+.card--small .card__money-corner-tl,
+.card--small .card__money-corner-br {
+  font-size: 0.35rem;
+}
+
+.card--small .card__wild-label {
+  font-size: 0.28rem;
+  padding: 2px;
+}
+
+.card--small .card__wild-half span {
+  font-size: 0.33rem;
+}
+
+.card--small .card__back::before {
+  inset: 3px;
+  border-width: 1.5px;
+  border-radius: 3px;
+}
+
+.card--small .card__back-stripe {
+  height: 24px;
+}
+
+.card--small .card__back-title {
+  font-size: 0.42rem;
+  letter-spacing: 1.5px;
+}
+
+.card--small .card__back-subtitle {
+  font-size: 0.26rem;
+  letter-spacing: 2px;
+}
+
+.card--small .card__set-indicator {
+  margin: 0;
+  gap: 1px;
+}
+
+.card--small .card__set-dot {
+  width: 6px;
+  height: 4px;
+}
+
+/* ===== Card Inner ===== */
+.card__inner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+}
+
+/* ===== Value Badge — coin-like circle ===== */
+.card__badge {
+  position: absolute;
+  top: 4px;
+  right: 5px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1.5px solid rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  font-size: 0.48rem;
+  font-weight: 800;
+  padding: 1px 5px;
+  z-index: 2;
+  color: #333;
+  line-height: 1.3;
+  min-width: 20px;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* ================================================
+   PROPERTY CARDS — white body with colored header
+   ================================================ */
+.card__inner--property {
+  background: #ffffff;
+}
+
+.card__prop-header {
+  padding: 6px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  position: relative;
+}
+
+.card__prop-name {
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 800;
+  font-size: 0.52rem;
+  letter-spacing: 0.3px;
+  line-height: 1.15;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  word-break: break-word;
+  text-align: center;
+  padding-right: 20px;
+}
+
+/* Property body with set indicator + rent table */
+.card__prop-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 2px 8px 4px;
+}
+
+/* Set indicator — small colored rectangles showing set size */
+.card__set-indicator {
+  display: flex;
+  gap: 3px;
+  justify-content: center;
+  margin: 3px 0;
+}
+
+.card__set-dot {
+  width: 14px;
+  height: 9px;
+  border-radius: 2px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+/* Rent table */
+.card__rent-table {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.card__rent-header-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.35rem;
+  font-weight: 700;
+  color: #999;
+  text-transform: uppercase;
+  padding: 0 2px 2px;
+  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 1px;
+  letter-spacing: 0.2px;
+}
+
+.card__rent-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5px 2px;
+  font-size: 0.55rem;
+}
+
+.card__rent-row--complete {
+  border-bottom: 2px solid #DAA520;
+  padding-bottom: 2px;
+}
+
+.card__rent-count {
+  font-weight: 700;
+  font-size: 0.48rem;
+  color: #555;
+  background: #f0f0f0;
+  border-radius: 3px;
+  width: 16px;
+  height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card__rent-amount {
+  font-weight: 800;
+  font-size: 0.55rem;
+  color: #333;
+}
+
+/* Compact (small) property card */
+.card__body-compact {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+}
+
+.card__mini-name {
+  font-size: 0.38rem;
+  font-weight: 600;
+  text-align: center;
+  color: #666;
+  line-height: 1.15;
+}
+
+/* ================================================
+   ACTION CARDS — white body, colored border
+   ================================================ */
+.card__inner--action {
+  background: #ffffff;
+}
+
+.card__action-header {
+  text-align: center;
+  font-weight: 800;
+  font-size: 0.48rem;
+  letter-spacing: 1.2px;
+  color: #999;
+  padding: 5px 4px 0;
+  text-transform: uppercase;
+}
+
+.card__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px 6px;
+  gap: 3px;
+  text-align: center;
+}
+
+.card__action-circle {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2.5px solid currentColor;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.04);
+  transition: background 0.2s ease;
+}
+
+.card:hover .card__action-circle {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.card__action-icon {
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.card__action-name {
+  font-weight: 800;
+  font-size: 0.65rem;
+  color: #333;
+  letter-spacing: 0.3px;
+  line-height: 1.2;
+}
+
+.card__action-desc {
+  font-size: 0.42rem;
+  color: #777;
+  line-height: 1.25;
+  max-width: 100px;
+}
+
+/* Rent color circle (split in 2) */
+.card__rent-circle {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+}
+
+.card__rent-half {
+  width: 50%;
+  height: 100%;
+}
+
+/* Rainbow circle for multicolor */
+.card__rainbow-circle {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 0, 0, 0.15);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+  background: conic-gradient(
+    var(--color-brown) 0deg,
+    var(--color-light-blue) 36deg,
+    var(--color-pink) 72deg,
+    var(--color-orange) 108deg,
+    var(--color-red) 144deg,
+    var(--color-yellow) 180deg,
+    var(--color-green) 216deg,
+    var(--color-dark-blue) 252deg,
+    var(--color-railroad) 288deg,
+    var(--color-utility) 324deg,
+    var(--color-brown) 360deg
+  );
+}
+
+/* ================================================
+   WILDCARD CARDS
+   ================================================ */
+.card__inner--wildcard-rainbow {
+  background: #ffffff;
+}
+
+.card__wild-rainbow-header {
+  text-align: center;
+  font-weight: 900;
+  font-size: 0.5rem;
+  letter-spacing: 1px;
+  padding: 6px 4px 2px;
+  text-transform: uppercase;
+  background: linear-gradient(
+    90deg,
+    var(--color-red),
+    var(--color-orange),
+    var(--color-yellow),
+    var(--color-green),
+    var(--color-dark-blue),
+    var(--color-pink)
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.card__inner--wildcard-dual {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.card__wild-split {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.card__wild-half {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card__wild-half span {
+  color: white;
+  font-weight: 800;
+  font-size: 0.6rem;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.card__wild-label {
+  text-align: center;
+  font-weight: 800;
+  font-size: 0.45rem;
+  color: #555;
+  padding: 3px;
+  background: #ffffff;
+  letter-spacing: 0.5px;
+  border-top: 1px solid #e0e0e0;
+}
+
+/* ================================================
+   MONEY CARDS — gradient backgrounds with white center circle
+   ================================================ */
+.card__inner--money {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  position: relative;
+}
+
+.card__money-value {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.92);
+  border: 3px solid rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.card__money-m {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.45rem;
+  font-weight: 800;
+  color: #444;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.card__money-amount {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #333;
+  line-height: 1;
+}
+
+.card__money-corner-tl {
+  position: absolute;
+  top: 6px;
+  left: 7px;
+  font-size: 0.55rem;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.75);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.card__money-corner-br {
+  position: absolute;
+  bottom: 6px;
+  right: 7px;
+  font-size: 0.55rem;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.75);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  transform: rotate(180deg);
+}
+
+/* Money color themes — matching physical card colors */
+.card__inner--money-1 {
+  background: linear-gradient(135deg, #C9A83F 0%, #E8C84A 50%, #D4AD40 100%);
+}
+
+.card__inner--money-1 .card__money-amount,
+.card__inner--money-1 .card__money-m {
+  color: #4a3800;
+}
+
+.card__inner--money-1 .card__money-corner-tl,
+.card__inner--money-1 .card__money-corner-br {
+  color: rgba(74, 56, 0, 0.65);
+  text-shadow: none;
+}
+
+.card__inner--money-2 {
+  background: linear-gradient(135deg, #8B6914 0%, #A67C1A 50%, #9B7218 100%);
+}
+
+.card__inner--money-3 {
+  background: linear-gradient(135deg, #2E7D32 0%, #43A047 50%, #2E7D32 100%);
+}
+
+.card__inner--money-4 {
+  background: linear-gradient(135deg, #1565C0 0%, #1E88E5 50%, #1565C0 100%);
+}
+
+.card__inner--money-5 {
+  background: linear-gradient(135deg, #6A1B9A 0%, #8E24AA 50%, #6A1B9A 100%);
+}
+
+.card__inner--money-10 {
+  background: linear-gradient(135deg, #B8860B 0%, #DAA520 50%, #CD950C 100%);
+  box-shadow: inset 0 0 0 3px rgba(255, 215, 0, 0.25);
+}
+
+.card__inner--money-10 .card__money-value {
+  border-color: rgba(255, 215, 0, 0.5);
+}
+
+/* ===== Play as Money Button ===== */
+.card__play-as-money {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-radius: 20px;
+  white-space: nowrap;
+  z-index: 5;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  animation: moneyBtnPulse 2s ease-in-out infinite;
+}
+
+@keyframes moneyBtnPulse {
+  0%, 100% { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); }
+  50% { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), 0 0 6px rgba(34, 197, 94, 0.4); }
+}
+
+.card__play-as-money:hover {
+  transform: translateX(-50%) translateY(-2px) scale(1.1);
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4);
+  animation: none;
+}
