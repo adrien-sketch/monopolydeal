@@ -1,11 +1,13 @@
 import { useState, useCallback } from 'react'
 import { GameProvider } from './state/context'
 import { GameBoard } from './components/GameBoard'
-import type { Difficulty } from './game/types'
+import { GameTips } from './components/GameTips'
+import { analyzeGame } from './game/analysis'
+import type { Difficulty, GameState } from './game/types'
 import './styles/layout.css'
 import './App.css'
 
-type Screen = 'start' | 'game' | 'gameOver'
+type Screen = 'start' | 'game' | 'gameOver' | 'tips'
 
 const DIFFICULTY_OPTIONS: { value: Difficulty; label: string; stars: string; description: string }[] = [
   { value: 'beginner', label: 'Débutant', stars: '\u2605', description: 'Monobot prudent, coups simples' },
@@ -18,14 +20,16 @@ function App() {
   const [playerWon, setPlayerWon] = useState(false)
   const [gameKey, setGameKey] = useState(0)
   const [difficulty, setDifficulty] = useState<Difficulty>('intermediate')
+  const [finalState, setFinalState] = useState<GameState | null>(null)
 
   const handleStartGame = () => {
     setGameKey(k => k + 1)
     setScreen('game')
   }
 
-  const handleGameOver = useCallback((won: boolean) => {
+  const handleGameOver = useCallback((won: boolean, state: GameState) => {
     setPlayerWon(won)
+    setFinalState(state)
     setScreen('gameOver')
   }, [])
 
@@ -145,6 +149,11 @@ function App() {
             <span className="decorative-divider__icon">&#9830;</span>
             <span className="decorative-divider__line" />
           </div>
+          <button className="start-screen__btn start-screen__btn--tips" onClick={() => setScreen('tips')}>
+            <span>Voir mes conseils</span>
+            <span className="start-screen__btn-glow" />
+          </button>
+
           <button className="start-screen__btn" onClick={handlePlayAgain}>
             <span>Rejouer</span>
             <span className="start-screen__btn-glow" />
@@ -152,6 +161,11 @@ function App() {
         </div>
       </div>
     )
+  }
+
+  if (screen === 'tips' && finalState) {
+    const analysis = analyzeGame(finalState)
+    return <GameTips analysis={analysis} playerWon={playerWon} onPlayAgain={handlePlayAgain} />
   }
 
   return (

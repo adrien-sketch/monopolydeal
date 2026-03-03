@@ -241,15 +241,10 @@
 .property-set__cards {
   display: flex;
   flex-direction: column;
-  gap: -40px;
 }
 
-.property-set__cards .card--small {
-  margin-top: -48px;
-}
-
-.property-set__cards .card--small:first-child {
-  margin-top: 0;
+.property-set__cards > *:not(:first-child) {
+  margin-top: -58px;
 }
 
 .property-set__complete {
@@ -922,6 +917,136 @@
 .end-screen__subtitle {
   font-size: 1.2rem;
   color: rgba(255, 255, 255, 0.85);
+}
+
+/* ===== Tips Button on End Screen ===== */
+.start-screen__btn--tips {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.start-screen__btn--tips:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.1));
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* ===== Tips Screen ===== */
+.tips-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  padding: 40px 20px;
+  overflow-y: auto;
+}
+
+.tips-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  max-width: 500px;
+  width: 100%;
+  z-index: 1;
+}
+
+.tips-title {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: clamp(1.5rem, 5vw, 2.2rem);
+  font-weight: 400;
+  color: #fff;
+  text-align: center;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
+}
+
+.tips-score {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 4px solid;
+  background: rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+
+.tips-score__value {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: 3rem;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.tips-score__label {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 600;
+}
+
+.tips-score__text {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 400;
+  margin-top: -8px;
+}
+
+.tips-section {
+  width: 100%;
+}
+
+.tips-section__title {
+  font-family: 'Fredoka One', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 400;
+  margin-bottom: 10px;
+  padding-left: 4px;
+}
+
+.tips-section__title--positive {
+  color: #86efac;
+}
+
+.tips-section__title--improvement {
+  color: #fcd34d;
+}
+
+.tips-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tip-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: #fff;
+}
+
+.tip-card--positive {
+  background: rgba(34, 197, 94, 0.15);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.tip-card--improvement {
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.tip-card__icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.tip-card__text {
+  flex: 1;
 }
 
 /* ===== Legacy screen-center (fallback) ===== */
