@@ -1,6 +1,7 @@
 import { useEffect, useRef, useCallback, useState } from 'react'
 import { useGame } from '../state/context'
-import type { Card as CardType, PropertyColor } from '../game/types'
+import type { Card as CardType, PropertyColor, PlayerState } from '../game/types'
+import { PROPERTY_COLORS } from '../game/types'
 import { Card } from './Card'
 import { PlayerArea } from './PlayerArea'
 import { ActionLog } from './ActionLog'
@@ -37,6 +38,14 @@ type ColorPickerContext =
   | { purpose: 'house'; cardId: string; colors: PropertyColor[] }
   | { purpose: 'hotel'; cardId: string; colors: PropertyColor[] }
 
+function getAllPropIds(player: PlayerState): Set<string> {
+  const ids = new Set<string>()
+  for (const color of PROPERTY_COLORS) {
+    for (const card of player.properties[color]) ids.add(card.id)
+  }
+  return ids
+}
+
 export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }) {
   const { state, dispatch } = useGame()
   const botBusy = useRef(false)
@@ -47,6 +56,43 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
   const [showEndTurnConfirm, setShowEndTurnConfirm] = useState(false)
   const [previewCard, setPreviewCard] = useState<CardType | null>(null)
   const isMobile = useIsMobile()
+  const [drawnCardIds, setDrawnCardIds] = useState<Set<string>>(new Set())
+  const prevHandIdsRef = useRef<Set<string>>(new Set(state.players.human.hand.map(c => c.id)))
+  const [transferredCardIds, setTransferredCardIds] = useState<Set<string>>(new Set())
+  const prevHumanPropIdsRef = useRef<Set<string>>(getAllPropIds(state.players.human))
+
+  // Detect newly drawn cards and trigger animation
+  useEffect(() => {
+    const currentIds = new Set(state.players.human.hand.map(c => c.id))
+    const newIds = new Set<string>()
+    for (const id of currentIds) {
+      if (!prevHandIdsRef.current.has(id)) newIds.add(id)
+    }
+    prevHandIdsRef.current = currentIds
+    if (newIds.size > 0) {
+      setDrawnCardIds(newIds)
+      const t = setTimeout(() => setDrawnCardIds(new Set()), 500)
+      return () => clearTimeout(t)
+    }
+  }, [state.players.human.hand])
+
+  // Detect property transfers (cards that appear in human properties but weren't played from hand)
+  useEffect(() => {
+    const currentPropIds = getAllPropIds(state.players.human)
+    const handIds = new Set(state.players.human.hand.map(c => c.id))
+    const newTransfers = new Set<string>()
+    for (const id of currentPropIds) {
+      if (!prevHumanPropIdsRef.current.has(id) && !prevHandIdsRef.current.has(id) && !handIds.has(id)) {
+        newTransfers.add(id)
+      }
+    }
+    prevHumanPropIdsRef.current = currentPropIds
+    if (newTransfers.size > 0) {
+      setTransferredCardIds(newTransfers)
+      const t = setTimeout(() => setTransferredCardIds(new Set()), 600)
+      return () => clearTimeout(t)
+    }
+  }, [state.players.human.properties])
 
   // Check for game over
   useEffect(() => {
@@ -317,7 +363,7 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
       <div className="opponent-area">
         <div className="opponent-area__info">
           <strong className="opponent-area__name">
-            Bot ({state.difficulty === 'beginner' ? 'Débutant' : state.difficulty === 'intermediate' ? 'Intermédiaire' : 'Expert'})
+            Monobot ({state.difficulty === 'beginner' ? 'Débutant' : state.difficulty === 'intermediate' ? 'Intermédiaire' : 'Expert'})
           </strong>
           <div className="opponent-area__hand-summary">
             <Card
@@ -354,7 +400,7 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
           {/* Turn info */}
           <div className={`turn-controls ${isHumanTurn ? 'turn-controls--human' : 'turn-controls--bot'}`}>
             <span className="turn-controls__info">
-              Tour {state.turnNumber} — {isHumanTurn ? 'Votre tour' : 'Tour du Bot'}
+              Tour {state.turnNumber} — {isHumanTurn ? 'Votre tour' : 'Tour de Monobot'}
               {state.turnPhase === 'play' && ` — ${state.cardsPlayedThisTurn}/3 cartes jouées`}
             </span>
             {isHumanTurn && state.turnPhase === 'draw' && (
@@ -380,7 +426,7 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
 
       {/* Player area */}
       <div className="player-area">
-        <PlayerArea player={state.players.human} />
+        <PlayerArea player={state.players.human} transferredCardIds={transferredCardIds} />
         <div className="hand">
           {state.players.human.hand.map((card, i) => {
             const count = state.players.human.hand.length
@@ -388,7 +434,7 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
             return (
               <div
                 key={card.id}
-                className="hand__card"
+                className={`hand__card${drawnCardIds.has(card.id) ? ' hand__card--drawn' : ''}`}
                 style={{ marginLeft: i === 0 ? 0 : ml }}
                 onClick={isMobile ? () => setPreviewCard(card) : undefined}
               >
@@ -398,7 +444,7 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
                   disabled={!canPlay}
                   playable={canPlay}
                   disabledReason={
-                    !isHumanTurn ? 'C\'est le tour du bot' :
+                    !isHumanTurn ? 'C\'est le tour de Monobot' :
                     state.turnPhase === 'draw' ? 'Vous devez d\'abord piocher' :
                     state.cardsPlayedThisTurn >= 3 ? '3 cartes déjà jouées' :
                     state.pendingAction ? 'Action en cours...' : undefined
@@ -569,7 +615,7 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
               {state.winner === 'human' ? 'Victoire !' : 'Défaite...'}
             </h2>
             <p style={{ color: 'var(--text-secondary)' }}>
-              {state.winner === 'human' ? 'Vous avez 3 sets complets !' : 'Le bot a complété 3 sets avant vous.'}
+              {state.winner === 'human' ? 'Vous avez 3 sets complets !' : 'Monobot a complété 3 sets avant vous.'}
             </p>
           </div>
         </div>
