@@ -30,7 +30,34 @@
   50% { box-shadow: 0 0 20px rgba(62, 160, 59, 0.4), 0 0 40px rgba(62, 160, 59, 0.15); }
 }
 
-/* ===== Particles ===== */
+/* ===== Floating Bills ===== */
+@keyframes billFloat {
+  0% {
+    transform: translateY(0) translateX(0) rotate(var(--bill-rotation, 0deg)) scale(var(--bill-scale, 1));
+    opacity: 0;
+  }
+  3% {
+    opacity: 0.35;
+  }
+  25% {
+    transform: translateY(-30vh) translateX(25px) rotate(calc(var(--bill-rotation, 0deg) + 10deg)) scale(var(--bill-scale, 1));
+  }
+  50% {
+    transform: translateY(-60vh) translateX(-15px) rotate(calc(var(--bill-rotation, 0deg) + 25deg)) scale(var(--bill-scale, 1));
+  }
+  75% {
+    transform: translateY(-90vh) translateX(20px) rotate(calc(var(--bill-rotation, 0deg) + 35deg)) scale(var(--bill-scale, 1));
+  }
+  92% {
+    opacity: 0.35;
+  }
+  100% {
+    transform: translateY(-120vh) translateX(0) rotate(calc(var(--bill-rotation, 0deg) + 45deg)) scale(var(--bill-scale, 1));
+    opacity: 0;
+  }
+}
+
+/* ===== Particles (legacy) ===== */
 @keyframes particleFloat {
   0% { transform: translateY(0) translateX(0); }
   25% { transform: translateY(-30vh) translateX(15px); }

@@ -10,7 +10,7 @@ import {
 export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
     case 'START_GAME':
-      return createInitialState()
+      return createInitialState(state.difficulty)
 
     case 'DRAW_CARDS':
       if (state.turnPhase !== 'draw') return state

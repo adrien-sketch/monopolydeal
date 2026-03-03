@@ -1,7 +1,8 @@
-import type { PlayerState, PropertyColor } from './types'
+import type { PlayerState, PropertyColor, Difficulty } from './types'
 import { PROPERTY_COLORS } from './types'
 import { SET_SIZES } from './constants'
 import { isSetComplete, getTotalAssets } from './sets'
+import { getBotConfig } from './botConfig'
 
 export interface PaymentSelection {
   cardId: string
@@ -9,7 +10,8 @@ export interface PaymentSelection {
 }
 
 // Auto-select payment for bot: minimize strategic loss
-export function chooseBotPayment(player: PlayerState, amount: number): PaymentSelection[] {
+export function chooseBotPayment(player: PlayerState, amount: number, difficulty: Difficulty = 'intermediate'): PaymentSelection[] {
+  const config = getBotConfig(difficulty)
   const selections: PaymentSelection[] = []
   let remaining = amount
 
@@ -27,8 +29,14 @@ export function chooseBotPayment(player: PlayerState, amount: number): PaymentSe
     return selections
   }
 
-  // Pay from bank first (smallest denominations first to minimize overpay)
-  const bankCards = [...player.bank].sort((a, b) => a.bankValue - b.bankValue)
+  // Pay from bank — sort order depends on difficulty
+  const bankCards = [...player.bank]
+  if (config.paymentSortOrder === 'largest-first') {
+    bankCards.sort((a, b) => b.bankValue - a.bankValue) // Beginner: overpays with big bills
+  } else {
+    bankCards.sort((a, b) => a.bankValue - b.bankValue) // Optimal: smallest first
+  }
+
   for (const card of bankCards) {
     if (remaining <= 0) break
     selections.push({ cardId: card.id, source: 'bank' })
@@ -37,10 +45,9 @@ export function chooseBotPayment(player: PlayerState, amount: number): PaymentSe
   if (remaining <= 0) return selections
 
   // Then pay from properties (least strategically valuable first)
-  const rankedProps = rankPropertiesByExpendability(player)
+  const rankedProps = rankPropertiesByExpendability(player, config.paymentProtectComplete, config.paymentProtectNearComplete)
   for (const { cardId, color } of rankedProps) {
     if (remaining <= 0) break
-    // Check this card wasn't already selected
     if (selections.some(s => s.cardId === cardId)) continue
     const card = player.properties[color].find(c => c.id === cardId)
     if (!card) continue
@@ -52,7 +59,11 @@ export function chooseBotPayment(player: PlayerState, amount: number): PaymentSe
 }
 
 // Rank properties from most expendable to least
-function rankPropertiesByExpendability(player: PlayerState): { cardId: string; color: PropertyColor; score: number }[] {
+function rankPropertiesByExpendability(
+  player: PlayerState,
+  protectComplete: boolean,
+  protectNearComplete: boolean,
+): { cardId: string; color: PropertyColor; score: number }[] {
   const result: { cardId: string; color: PropertyColor; score: number }[] = []
 
   for (const color of PROPERTY_COLORS) {
@@ -62,20 +73,18 @@ function rankPropertiesByExpendability(player: PlayerState): { cardId: string; c
 
     for (const card of cards) {
       let score = 0
-      if (complete) {
-        score = 100 // Never give up complete sets if avoidable
-      } else if (cards.length === needed - 1) {
-        score = 50 // Almost complete — protect
+      if (complete && protectComplete) {
+        score = 100
+      } else if (cards.length === needed - 1 && protectNearComplete) {
+        score = 50
       } else {
-        score = cards.length * 10 // Less progress = more expendable
+        score = cards.length * 10
       }
-      // Wildcards are slightly more valuable due to flexibility
       if (card.type === 'wildcard') score += 5
       result.push({ cardId: card.id, color, score })
     }
   }
 
-  // Sort ascending: lowest score = most expendable = sacrifice first
   result.sort((a, b) => a.score - b.score)
   return result
 }

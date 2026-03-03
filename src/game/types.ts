@@ -1,3 +1,6 @@
+// ===== Difficulty =====
+export type Difficulty = 'beginner' | 'intermediate' | 'advanced'
+
 // ===== Property Colors =====
 export const PROPERTY_COLORS = [
   'brown', 'lightBlue', 'pink', 'orange', 'red',
@@ -127,6 +130,7 @@ export interface LogEntry {
 
 // ===== Game State =====
 export interface GameState {
+  difficulty: Difficulty
   players: Record<PlayerId, PlayerState>
   drawPile: Card[]
   discardPile: Card[]
@@ -137,6 +141,7 @@ export interface GameState {
   winner: PlayerId | null
   actionLog: LogEntry[]
   turnNumber: number
+  playedActionCards: ActionType[]
 }
 
 // ===== Game Actions (for reducer) =====
