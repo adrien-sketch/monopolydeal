@@ -121,6 +121,8 @@ export type TurnPhase = 'draw' | 'play' | 'discard' | 'actionResponse' | 'paymen
 export interface LogEntry {
   player: PlayerId
   message: string
+  turn?: number
+  icon?: string
 }
 
 // ===== Game State =====

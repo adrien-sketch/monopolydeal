@@ -10,6 +10,7 @@ import { SetPickerModal } from './SetPickerModal'
 import { JustSayNoModal } from './JustSayNoModal'
 import { DiscardModal } from './DiscardModal'
 import { ColorPickerModal } from './ColorPickerModal'
+import { HelpButton } from './HelpModal'
 import {
   computeBotTurn, shouldBotPlayJustSayNo, botSelectPropertyToSteal,
   botSelectSetToSteal, botSelectPropertyToGive,
@@ -31,6 +32,7 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
   stateRef.current = state
   const [colorPicker, setColorPicker] = useState<ColorPickerContext | null>(null)
   const [pendingDoubleRent, setPendingDoubleRent] = useState<{ cardId: string; color: PropertyColor; doubleCardId: string } | null>(null)
+  const [showEndTurnConfirm, setShowEndTurnConfirm] = useState(false)
 
   // Check for game over
   useEffect(() => {
@@ -289,21 +291,19 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
 
   return (
     <div className="game-board">
+      <HelpButton />
       {/* Opponent area */}
       <div className="opponent-area">
         <div className="opponent-area__info">
           <strong className="opponent-area__name">Bot</strong>
-          <div className="opponent-area__hand">
-            {state.players.bot.hand.map((_, i) => (
-              <Card
-                key={`bot-hand-${i}`}
-                card={{ id: `hidden-${i}`, type: 'money', name: '', bankValue: 0 }}
-                faceDown
-                small
-              />
-            ))}
+          <div className="opponent-area__hand-summary">
+            <Card
+              card={{ id: 'hidden-stack', type: 'money', name: '', bankValue: 0 }}
+              faceDown
+              small
+            />
+            <span className="opponent-area__count">{state.players.bot.hand.length} cartes</span>
           </div>
-          <span className="opponent-area__count">{state.players.bot.hand.length} cartes</span>
         </div>
         <PlayerArea player={state.players.bot} />
       </div>
@@ -340,7 +340,13 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
               </button>
             )}
             {isHumanTurn && state.turnPhase === 'play' && !state.pendingAction && (
-              <button className="turn-controls__btn" onClick={() => dispatch({ type: 'END_TURN' })}>
+              <button className="turn-controls__btn" onClick={() => {
+                if (state.cardsPlayedThisTurn < 2 && state.players.human.hand.length > 0) {
+                  setShowEndTurnConfirm(true)
+                } else {
+                  dispatch({ type: 'END_TURN' })
+                }
+              }}>
                 Fin du tour
               </button>
             )}
@@ -366,6 +372,13 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
                   card={card}
                   selected={false}
                   disabled={!canPlay}
+                  playable={canPlay}
+                  disabledReason={
+                    !isHumanTurn ? 'C\'est le tour du bot' :
+                    state.turnPhase === 'draw' ? 'Vous devez d\'abord piocher' :
+                    state.cardsPlayedThisTurn >= 3 ? '3 cartes déjà jouées' :
+                    state.pendingAction ? 'Action en cours...' : undefined
+                  }
                   onClick={() => handleCardPlay(card)}
                 />
                 {canPlay && card.bankValue > 0 && card.type !== 'money' && (
@@ -464,6 +477,33 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
                 }}
               >
                 Oui, doubler !
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {showEndTurnConfirm && (
+        <div className="modal-overlay">
+          <div className="modal" style={{ textAlign: 'center' }}>
+            <h3 className="modal__title">Terminer le tour ?</h3>
+            <p style={{ color: 'var(--text-secondary)', marginBottom: '16px' }}>
+              Vous n'avez joué que {state.cardsPlayedThisTurn}/3 carte{state.cardsPlayedThisTurn !== 1 ? 's' : ''}. Terminer quand même ?
+            </p>
+            <div className="modal__actions" style={{ justifyContent: 'center' }}>
+              <button
+                className="modal__btn modal__btn--secondary"
+                onClick={() => setShowEndTurnConfirm(false)}
+              >
+                Continuer à jouer
+              </button>
+              <button
+                className="modal__btn modal__btn--primary"
+                onClick={() => {
+                  setShowEndTurnConfirm(false)
+                  dispatch({ type: 'END_TURN' })
+                }}
+              >
+                Fin du tour
               </button>
             </div>
           </div>

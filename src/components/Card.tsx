@@ -8,6 +8,8 @@ interface CardProps {
   small?: boolean
   selected?: boolean
   disabled?: boolean
+  playable?: boolean
+  disabledReason?: string
   onClick?: () => void
   displayColor?: PropertyColor
 }
@@ -54,7 +56,7 @@ function getRentBorderColor(card: CardType): string {
   return '#888'
 }
 
-export function Card({ card, faceDown, small, selected, disabled, onClick, displayColor }: CardProps) {
+export function Card({ card, faceDown, small, selected, disabled, playable, disabledReason, onClick, displayColor }: CardProps) {
   const isActionBorder = !faceDown && (card.type === 'action' || card.type === 'rent')
   const classes = [
     'card',
@@ -62,6 +64,7 @@ export function Card({ card, faceDown, small, selected, disabled, onClick, displ
     small && 'card--small',
     selected && 'card--selected',
     disabled && 'card--disabled',
+    playable && 'card--playable',
     isActionBorder && 'card--action-border',
   ].filter(Boolean).join(' ')
 
@@ -76,7 +79,7 @@ export function Card({ card, faceDown, small, selected, disabled, onClick, displ
 
   if (faceDown) {
     return (
-      <div className={classes} title="">
+      <div className={classes} title="" style={cardStyle}>
         <div className="card__back">
           <div className="card__back-stripe">
             <span className="card__back-title">MONOPOLY</span>
@@ -88,7 +91,7 @@ export function Card({ card, faceDown, small, selected, disabled, onClick, displ
   }
 
   return (
-    <div className={classes} onClick={disabled ? undefined : onClick} title={card.name} style={cardStyle}>
+    <div className={classes} onClick={disabled ? undefined : onClick} title={disabled && disabledReason ? disabledReason : card.name} style={cardStyle}>
       {card.type === 'property' && <PropertyCard card={card} displayColor={displayColor} small={small} />}
       {card.type === 'wildcard' && <WildcardCard card={card} displayColor={displayColor} small={small} />}
       {card.type === 'action' && <ActionCard card={card} small={small} />}

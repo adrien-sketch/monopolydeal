@@ -55,17 +55,11 @@
   color: var(--text-muted);
 }
 
-.opponent-area__hand {
+.opponent-area__hand-summary {
   display: flex;
-  gap: -20px;
-}
-
-.opponent-area__hand .card {
-  margin-left: -20px;
-}
-
-.opponent-area__hand .card:first-child {
-  margin-left: 0;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
 }
 
 /* ===== Middle Area ===== */
@@ -84,8 +78,13 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 6px;
+  padding: 10px 16px;
   flex: 1;
+  background: rgba(255, 255, 255, 0.35);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .middle-area__piles {
@@ -191,6 +190,27 @@
   color: white;
   text-align: center;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Progress bar for set completion */
+.property-set__progress {
+  height: 3px;
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 2px;
+  margin: 2px 3px;
+  overflow: hidden;
+}
+
+.property-set__progress-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.4s ease;
+  opacity: 0.7;
+}
+
+.property-set__complete .property-set__progress-fill {
+  opacity: 1;
+  box-shadow: 0 0 4px rgba(255, 193, 7, 0.5);
 }
 
 .property-set__cards {
@@ -362,6 +382,16 @@
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
   line-height: 1.4;
   color: var(--text-secondary);
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.action-log__icon {
+  font-size: 0.65rem;
+  flex-shrink: 0;
+  width: 16px;
+  text-align: center;
 }
 
 .action-log__entry--bot {
@@ -738,4 +768,253 @@
 
 .screen-center__title--lose {
   color: #E31837;
+}
+
+/* ===== Help Button ===== */
+.help-btn {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  font-family: 'Fredoka One', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  cursor: pointer;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+.help-btn:hover {
+  background: #fff;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  color: #E31837;
+  transform: scale(1.1);
+}
+
+/* ===== Help Modal ===== */
+.help-modal {
+  max-width: 560px;
+  max-height: 85vh;
+  overflow-y: auto;
+  text-align: left;
+}
+
+.help-modal__close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.help-modal__close:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--text-primary);
+}
+
+.help-modal__content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.help-modal__content section {
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.help-modal__content section:last-child {
+  border-bottom: none;
+}
+
+.help-modal__content h4 {
+  font-family: 'Fredoka One', sans-serif;
+  font-weight: 400;
+  font-size: 0.95rem;
+  color: #2E7D32;
+  margin-bottom: 6px;
+}
+
+.help-modal__content p,
+.help-modal__content li {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.help-modal__content ul,
+.help-modal__content ol {
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* ===== Responsive Mobile ===== */
+@media (max-width: 768px) {
+  :root {
+    --card-width: 72px;
+    --card-height: 102px;
+  }
+
+  .game-board {
+    padding: 4px 6px;
+    gap: 4px;
+  }
+
+  /* Stack middle area vertically, log goes below */
+  .middle-area {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .middle-area__center {
+    padding: 6px 10px;
+  }
+
+  .action-log {
+    width: 100%;
+    max-height: 100px;
+    font-size: 0.65rem;
+  }
+
+  .action-log__title {
+    font-size: 0.7rem;
+  }
+
+  /* Opponent area compact */
+  .opponent-area {
+    padding: 6px 8px;
+    gap: 4px;
+  }
+
+  .opponent-area__name {
+    font-size: 0.75rem;
+  }
+
+  /* Player area compact */
+  .player-area {
+    padding: 6px 8px;
+  }
+
+  /* Hand — larger touch targets */
+  .hand {
+    min-height: calc(var(--card-height) + 12px);
+    padding: 4px 0;
+  }
+
+  .hand__card:hover {
+    transform: translateY(-12px) scale(1.04);
+    margin-left: 4px !important;
+    margin-right: 4px;
+  }
+
+  /* Turn controls */
+  .turn-controls {
+    padding: 6px 12px;
+    gap: 8px;
+  }
+
+  .turn-controls__info {
+    font-size: 0.7rem;
+  }
+
+  .turn-controls__btn {
+    padding: 6px 14px;
+    font-size: 0.75rem;
+  }
+
+  /* Property sets */
+  .property-set__label {
+    font-size: 0.5rem;
+    padding: 2px 4px;
+  }
+
+  /* Bank */
+  .bank__total {
+    font-size: 1rem;
+  }
+
+  .bank__label {
+    font-size: 0.6rem;
+  }
+
+  /* Modal */
+  .modal {
+    padding: 12px 16px;
+    max-width: 95%;
+  }
+
+  .modal__title {
+    font-size: 1.1rem;
+  }
+
+  /* Help button */
+  .help-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 0.9rem;
+    top: 8px;
+    right: 8px;
+  }
+
+  /* Start screen */
+  .start-screen__frame {
+    padding: 40px 30px;
+  }
+
+  .start-screen__btn {
+    padding: 12px 40px;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --card-width: 60px;
+    --card-height: 85px;
+  }
+
+  .opponent-area__hand .card {
+    margin-left: -28px;
+  }
+
+  .turn-controls {
+    flex-direction: column;
+    border-radius: 12px;
+    gap: 4px;
+    padding: 6px 10px;
+  }
+
+  .turn-controls__info {
+    font-size: 0.65rem;
+  }
+
+  .action-log {
+    max-height: 70px;
+  }
+
+  .start-screen__frame {
+    padding: 30px 20px;
+  }
 }

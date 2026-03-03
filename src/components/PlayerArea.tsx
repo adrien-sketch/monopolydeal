@@ -33,6 +33,15 @@ export function PlayerArea({ player }: PlayerAreaProps) {
               <div className="property-set__label" style={{ background: `var(--color-${cssColorVar(color)})` }}>
                 {COLOR_NAMES[color]} {cards.length}/{SET_SIZES[color]}
               </div>
+              <div className="property-set__progress">
+                <div
+                  className="property-set__progress-fill"
+                  style={{
+                    width: `${(cards.length / SET_SIZES[color]) * 100}%`,
+                    background: `var(--color-${cssColorVar(color)})`,
+                  }}
+                />
+              </div>
               <div className="property-set__cards">
                 {cards.map(card => (
                   <Card key={card.id} card={card} small displayColor={color} />
