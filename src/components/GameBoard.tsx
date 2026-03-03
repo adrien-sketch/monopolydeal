@@ -1,6 +1,6 @@
 import { useEffect, useRef, useCallback, useState } from 'react'
 import { useGame } from '../state/context'
-import type { Card as CardType, PropertyColor, PlayerState } from '../game/types'
+import type { Card as CardType, PropertyColor, PlayerState, GameState } from '../game/types'
 import { PROPERTY_COLORS } from '../game/types'
 import { Card } from './Card'
 import { PlayerArea } from './PlayerArea'
@@ -46,7 +46,7 @@ function getAllPropIds(player: PlayerState): Set<string> {
   return ids
 }
 
-export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }) {
+export function GameBoard({ onGameOver }: { onGameOver: (won: boolean, finalState: GameState) => void }) {
   const { state, dispatch } = useGame()
   const botBusy = useRef(false)
   const stateRef = useRef(state)
@@ -97,7 +97,7 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
   // Check for game over
   useEffect(() => {
     if (state.winner) {
-      const timer = setTimeout(() => onGameOver(state.winner === 'human'), 1500)
+      const timer = setTimeout(() => onGameOver(state.winner === 'human', state), 1500)
       return () => clearTimeout(timer)
     }
   }, [state.winner, onGameOver])
