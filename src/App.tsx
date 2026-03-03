@@ -1,15 +1,23 @@
 import { useState, useCallback } from 'react'
 import { GameProvider } from './state/context'
 import { GameBoard } from './components/GameBoard'
+import type { Difficulty } from './game/types'
 import './styles/layout.css'
 import './App.css'
 
 type Screen = 'start' | 'game' | 'gameOver'
 
+const DIFFICULTY_OPTIONS: { value: Difficulty; label: string; stars: string; description: string }[] = [
+  { value: 'beginner', label: 'Débutant', stars: '\u2605', description: 'Bot prudent, coups simples' },
+  { value: 'intermediate', label: 'Intermédiaire', stars: '\u2605\u2605', description: 'Bot stratégique, bons réflexes' },
+  { value: 'advanced', label: 'Expert', stars: '\u2605\u2605\u2605', description: 'Bot expert, combos et anticipation' },
+]
+
 function App() {
   const [screen, setScreen] = useState<Screen>('start')
   const [playerWon, setPlayerWon] = useState(false)
   const [gameKey, setGameKey] = useState(0)
+  const [difficulty, setDifficulty] = useState<Difficulty>('intermediate')
 
   const handleStartGame = () => {
     setGameKey(k => k + 1)
@@ -80,6 +88,23 @@ function App() {
               <span className="decorative-divider__line" />
             </div>
 
+            <div className="difficulty-selector">
+              <p className="difficulty-selector__label">Difficulté du bot</p>
+              <div className="difficulty-selector__options">
+                {DIFFICULTY_OPTIONS.map(opt => (
+                  <button
+                    key={opt.value}
+                    className={`difficulty-selector__btn difficulty-selector__btn--${opt.value}${difficulty === opt.value ? ' difficulty-selector__btn--active' : ''}`}
+                    onClick={() => setDifficulty(opt.value)}
+                  >
+                    <span className="difficulty-selector__btn-icon">{opt.stars}</span>
+                    <span className="difficulty-selector__btn-label">{opt.label}</span>
+                    <span className="difficulty-selector__btn-desc">{opt.description}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <button className="start-screen__btn" onClick={handleStartGame}>
               <span>Jouer</span>
               <span className="start-screen__btn-glow" />
@@ -135,7 +160,7 @@ function App() {
   }
 
   return (
-    <GameProvider key={gameKey}>
+    <GameProvider key={gameKey} difficulty={difficulty}>
       <GameBoard onGameOver={handleGameOver} />
     </GameProvider>
   )

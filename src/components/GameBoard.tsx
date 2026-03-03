@@ -111,7 +111,7 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
     // Bot pays debt
     if (state.pendingAction?.type === 'payDebt' && state.pendingAction.debtor === 'bot') {
       botBusy.current = true
-      const payments = chooseBotPayment(state.players.bot, state.pendingAction.amount)
+      const payments = chooseBotPayment(state.players.bot, state.pendingAction.amount, state.difficulty)
       const t = setTimeout(() => {
         botBusy.current = false
         dispatch({ type: 'PAY_DEBT', payments })
@@ -316,7 +316,9 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
       {/* Opponent area */}
       <div className="opponent-area">
         <div className="opponent-area__info">
-          <strong className="opponent-area__name">Bot</strong>
+          <strong className="opponent-area__name">
+            Bot ({state.difficulty === 'beginner' ? 'Débutant' : state.difficulty === 'intermediate' ? 'Intermédiaire' : 'Expert'})
+          </strong>
           <div className="opponent-area__hand-summary">
             <Card
               card={{ id: 'hidden-stack', type: 'money', name: '', bankValue: 0 }}

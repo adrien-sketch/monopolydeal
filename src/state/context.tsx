@@ -1,5 +1,5 @@
 import { createContext, useContext, useReducer, type ReactNode } from 'react'
-import type { GameState, GameAction } from '../game/types'
+import type { GameState, GameAction, Difficulty } from '../game/types'
 import { createInitialState } from '../game/engine'
 import { gameReducer } from './reducer'
 
@@ -10,8 +10,8 @@ interface GameContextValue {
 
 const GameContext = createContext<GameContextValue | null>(null)
 
-export function GameProvider({ children }: { children: ReactNode }) {
-  const [state, dispatch] = useReducer(gameReducer, null, createInitialState)
+export function GameProvider({ children, difficulty }: { children: ReactNode; difficulty: Difficulty }) {
+  const [state, dispatch] = useReducer(gameReducer, difficulty, (d) => createInitialState(d))
 
   return (
     <GameContext.Provider value={{ state, dispatch }}>

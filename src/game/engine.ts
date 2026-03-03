@@ -1,6 +1,6 @@
 import type {
   Card, GameState, PlayerState, PlayerId, PropertyColor,
-  PendingAction, TurnPhase,
+  PendingAction, TurnPhase, Difficulty,
 } from './types'
 import { PROPERTY_COLORS } from './types'
 import { createDeck, shuffleDeck } from './cards'
@@ -29,7 +29,7 @@ function createPlayer(id: PlayerId): PlayerState {
   }
 }
 
-export function createInitialState(): GameState {
+export function createInitialState(difficulty: Difficulty = 'intermediate'): GameState {
   const deck = createDeck()
 
   const human = createPlayer('human')
@@ -40,6 +40,7 @@ export function createInitialState(): GameState {
   bot.hand = deck.splice(0, 5)
 
   return {
+    difficulty,
     players: { human, bot },
     drawPile: deck,
     discardPile: [],
@@ -50,6 +51,7 @@ export function createInitialState(): GameState {
     winner: null,
     actionLog: [],
     turnNumber: 1,
+    playedActionCards: [],
   }
 }
 
@@ -158,6 +160,7 @@ export function playDebtCollector(state: GameState, playerId: PlayerId, cardId: 
     },
   }
   s.turnPhase = 'actionResponse'
+  if (card.actionType) s.playedActionCards.push(card.actionType)
   s.actionLog.push({ player: playerId, message: `joue Agent de Recouvrement ! ${opponent} doit payer 5M.` })
   return s
 }
@@ -186,6 +189,7 @@ export function playBirthday(state: GameState, playerId: PlayerId, cardId: strin
     },
   }
   s.turnPhase = 'actionResponse'
+  if (card.actionType) s.playedActionCards.push(card.actionType)
   s.actionLog.push({ player: playerId, message: `joue C'est mon Anniversaire ! ${opponent} doit payer 2M.` })
   return s
 }
@@ -274,6 +278,7 @@ export function playSlyDeal(state: GameState, playerId: PlayerId, cardId: string
     },
   }
   s.turnPhase = 'actionResponse'
+  if (card.actionType) s.playedActionCards.push(card.actionType)
   s.actionLog.push({ player: playerId, message: `joue Deal Duel !` })
   return s
 }
@@ -312,6 +317,7 @@ export function playForcedDeal(state: GameState, playerId: PlayerId, cardId: str
     },
   }
   s.turnPhase = 'actionResponse'
+  if (card.actionType) s.playedActionCards.push(card.actionType)
   s.actionLog.push({ player: playerId, message: `joue Deal Troc !` })
   return s
 }
@@ -349,6 +355,7 @@ export function playDealBreaker(state: GameState, playerId: PlayerId, cardId: st
     },
   }
   s.turnPhase = 'actionResponse'
+  if (card.actionType) s.playedActionCards.push(card.actionType)
   s.actionLog.push({ player: playerId, message: `joue Deal Jackpot !` })
   return s
 }
@@ -419,6 +426,7 @@ export function resolveJustSayNo(state: GameState, playsJSN: boolean): GameState
 
   const [jsnCard] = player.hand.splice(jsnIdx, 1)
   s.discardPile.push(jsnCard)
+  s.playedActionCards.push('justSayNo')
   s.actionLog.push({ player: jsnPlayer, message: `joue Juste dire non !` })
 
   // Check if other side can counter
