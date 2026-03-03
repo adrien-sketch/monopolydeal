@@ -870,6 +870,96 @@
   gap: 4px;
 }
 
+/* ===== Card Preview (Mobile zoom) ===== */
+.card-preview-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  animation: previewFadeIn 0.2s ease-out;
+}
+
+@keyframes previewFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.card-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  animation: previewZoomIn 0.25s ease-out;
+}
+
+@keyframes previewZoomIn {
+  from { opacity: 0; transform: scale(0.7); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.card-preview__card-wrapper {
+  --card-width: 96px;
+  --card-height: 136px;
+  --card-radius: 10px;
+  width: 212px;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.card-preview__card-wrapper .card {
+  transform: scale(2.2);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  cursor: default;
+}
+
+.card-preview__card-wrapper .card:hover {
+  transform: scale(2.2);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.card-preview__actions {
+  display: flex;
+  gap: 12px;
+}
+
+.card-preview__btn {
+  padding: 14px 28px;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'Poppins', sans-serif;
+}
+
+.card-preview__btn--play {
+  background: linear-gradient(135deg, #43A047, #2E7D32);
+  color: white;
+  box-shadow: 0 4px 16px rgba(46, 125, 50, 0.35);
+}
+
+.card-preview__btn--money {
+  background: linear-gradient(135deg, #FFC107, #F57C00);
+  color: #333;
+  font-weight: 800;
+  box-shadow: 0 4px 16px rgba(255, 152, 0, 0.35);
+}
+
+.card-preview__hint {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
 /* ===== Responsive Mobile ===== */
 @media (max-width: 768px) {
   :root {
@@ -917,10 +1007,22 @@
     padding: 6px 8px;
   }
 
-  /* Hand — larger touch targets */
+  /* Hand — scrollable on mobile with larger touch targets */
   .hand {
     min-height: calc(var(--card-height) + 12px);
-    padding: 4px 0;
+    padding: 4px 12px 8px;
+    overflow-x: auto;
+    justify-content: flex-start;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .hand::-webkit-scrollbar {
+    display: none;
+  }
+
+  .hand__card {
+    flex-shrink: 0;
   }
 
   .hand__card:hover {
@@ -991,8 +1093,8 @@
 
 @media (max-width: 480px) {
   :root {
-    --card-width: 60px;
-    --card-height: 85px;
+    --card-width: 68px;
+    --card-height: 96px;
   }
 
   .opponent-area__hand .card {

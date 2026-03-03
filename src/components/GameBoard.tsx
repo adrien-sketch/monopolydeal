@@ -19,6 +19,18 @@ import { chooseBotPayment } from '../game/payment'
 import { getHouseableColors, getHotelableColors } from '../game/engine'
 import '../styles/layout.css'
 
+function useIsMobile(breakpoint = 768) {
+  const [mobile, setMobile] = useState(
+    typeof window !== 'undefined' && window.innerWidth <= breakpoint
+  )
+  useEffect(() => {
+    const handler = () => setMobile(window.innerWidth <= breakpoint)
+    window.addEventListener('resize', handler)
+    return () => window.removeEventListener('resize', handler)
+  }, [breakpoint])
+  return mobile
+}
+
 type ColorPickerContext =
   | { purpose: 'wildcard'; cardId: string; colors: PropertyColor[] }
   | { purpose: 'rent'; cardId: string; colors: PropertyColor[] }
@@ -33,6 +45,8 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
   const [colorPicker, setColorPicker] = useState<ColorPickerContext | null>(null)
   const [pendingDoubleRent, setPendingDoubleRent] = useState<{ cardId: string; color: PropertyColor; doubleCardId: string } | null>(null)
   const [showEndTurnConfirm, setShowEndTurnConfirm] = useState(false)
+  const [previewCard, setPreviewCard] = useState<CardType | null>(null)
+  const isMobile = useIsMobile()
 
   // Check for game over
   useEffect(() => {
@@ -289,6 +303,13 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
     }
   }, [showJustSayNo, humanHasJSN, dispatch])
 
+  // Dismiss card preview if card is no longer in hand
+  useEffect(() => {
+    if (previewCard && !state.players.human.hand.find(c => c.id === previewCard.id)) {
+      setPreviewCard(null)
+    }
+  }, [previewCard, state.players.human.hand])
+
   return (
     <div className="game-board">
       <HelpButton />
@@ -361,12 +382,13 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
         <div className="hand">
           {state.players.human.hand.map((card, i) => {
             const count = state.players.human.hand.length
-            const ml = count <= 5 ? 6 : count <= 8 ? -6 : -14
+            const ml = isMobile ? 4 : (count <= 5 ? 6 : count <= 8 ? -6 : -14)
             return (
               <div
                 key={card.id}
                 className="hand__card"
                 style={{ marginLeft: i === 0 ? 0 : ml }}
+                onClick={isMobile ? () => setPreviewCard(card) : undefined}
               >
                 <Card
                   card={card}
@@ -379,9 +401,9 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
                     state.cardsPlayedThisTurn >= 3 ? '3 cartes déjà jouées' :
                     state.pendingAction ? 'Action en cours...' : undefined
                   }
-                  onClick={() => handleCardPlay(card)}
+                  onClick={!isMobile ? () => handleCardPlay(card) : undefined}
                 />
-                {canPlay && card.bankValue > 0 && card.type !== 'money' && (
+                {!isMobile && canPlay && card.bankValue > 0 && card.type !== 'money' && (
                   <button
                     className="card__play-as-money"
                     onClick={(e) => { e.stopPropagation(); handlePlayAsMoney(card) }}
@@ -506,6 +528,35 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
                 Fin du tour
               </button>
             </div>
+          </div>
+        </div>
+      )}
+      {previewCard && (
+        <div className="card-preview-overlay" onClick={() => setPreviewCard(null)}>
+          <div className="card-preview" onClick={(e) => e.stopPropagation()}>
+            <div className="card-preview__card-wrapper">
+              <Card card={previewCard} />
+            </div>
+            {canPlay ? (
+              <div className="card-preview__actions">
+                <button
+                  className="card-preview__btn card-preview__btn--play"
+                  onClick={() => { const c = previewCard; setPreviewCard(null); handleCardPlay(c) }}
+                >
+                  Jouer
+                </button>
+                {previewCard.bankValue > 0 && previewCard.type !== 'money' && (
+                  <button
+                    className="card-preview__btn card-preview__btn--money"
+                    onClick={() => { const c = previewCard; setPreviewCard(null); handlePlayAsMoney(c) }}
+                  >
+                    Banque ({previewCard.bankValue}M)
+                  </button>
+                )}
+              </div>
+            ) : (
+              <p className="card-preview__hint">Touchez à côté pour fermer</p>
+            )}
           </div>
         </div>
       )}
