@@ -16,9 +16,10 @@ function getBankDenominations(bank: CardType[]) {
 
 interface PlayerAreaProps {
   player: PlayerState
+  transferredCardIds?: Set<string>
 }
 
-export function PlayerArea({ player }: PlayerAreaProps) {
+export function PlayerArea({ player, transferredCardIds }: PlayerAreaProps) {
   const activeColors = PROPERTY_COLORS.filter(c => player.properties[c].length > 0)
 
   return (
@@ -44,7 +45,9 @@ export function PlayerArea({ player }: PlayerAreaProps) {
               </div>
               <div className="property-set__cards">
                 {cards.map(card => (
-                  <Card key={card.id} card={card} small displayColor={color} />
+                  <div key={card.id} className={transferredCardIds?.has(card.id) ? 'property-card--transferred' : ''}>
+                    <Card card={card} small displayColor={color} />
+                  </div>
                 ))}
               </div>
               {player.houses[color] > 0 && <span className="property-set__badge">🏠</span>}

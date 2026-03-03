@@ -1,6 +1,7 @@
 import { useEffect, useRef, useCallback, useState } from 'react'
 import { useGame } from '../state/context'
-import type { Card as CardType, PropertyColor } from '../game/types'
+import type { Card as CardType, PropertyColor, PlayerState } from '../game/types'
+import { PROPERTY_COLORS } from '../game/types'
 import { Card } from './Card'
 import { PlayerArea } from './PlayerArea'
 import { ActionLog } from './ActionLog'
@@ -37,6 +38,14 @@ type ColorPickerContext =
   | { purpose: 'house'; cardId: string; colors: PropertyColor[] }
   | { purpose: 'hotel'; cardId: string; colors: PropertyColor[] }
 
+function getAllPropIds(player: PlayerState): Set<string> {
+  const ids = new Set<string>()
+  for (const color of PROPERTY_COLORS) {
+    for (const card of player.properties[color]) ids.add(card.id)
+  }
+  return ids
+}
+
 export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }) {
   const { state, dispatch } = useGame()
   const botBusy = useRef(false)
@@ -49,6 +58,8 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
   const isMobile = useIsMobile()
   const [drawnCardIds, setDrawnCardIds] = useState<Set<string>>(new Set())
   const prevHandIdsRef = useRef<Set<string>>(new Set(state.players.human.hand.map(c => c.id)))
+  const [transferredCardIds, setTransferredCardIds] = useState<Set<string>>(new Set())
+  const prevHumanPropIdsRef = useRef<Set<string>>(getAllPropIds(state.players.human))
 
   // Detect newly drawn cards and trigger animation
   useEffect(() => {
@@ -64,6 +75,24 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
       return () => clearTimeout(t)
     }
   }, [state.players.human.hand])
+
+  // Detect property transfers (cards that appear in human properties but weren't played from hand)
+  useEffect(() => {
+    const currentPropIds = getAllPropIds(state.players.human)
+    const handIds = new Set(state.players.human.hand.map(c => c.id))
+    const newTransfers = new Set<string>()
+    for (const id of currentPropIds) {
+      if (!prevHumanPropIdsRef.current.has(id) && !prevHandIdsRef.current.has(id) && !handIds.has(id)) {
+        newTransfers.add(id)
+      }
+    }
+    prevHumanPropIdsRef.current = currentPropIds
+    if (newTransfers.size > 0) {
+      setTransferredCardIds(newTransfers)
+      const t = setTimeout(() => setTransferredCardIds(new Set()), 600)
+      return () => clearTimeout(t)
+    }
+  }, [state.players.human.properties])
 
   // Check for game over
   useEffect(() => {
@@ -397,7 +426,7 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean) => void }
 
       {/* Player area */}
       <div className="player-area">
-        <PlayerArea player={state.players.human} />
+        <PlayerArea player={state.players.human} transferredCardIds={transferredCardIds} />
         <div className="hand">
           {state.players.human.hand.map((card, i) => {
             const count = state.players.human.hand.length
