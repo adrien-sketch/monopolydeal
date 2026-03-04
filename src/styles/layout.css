@@ -332,14 +332,19 @@
 
 .hand__card {
   position: relative;
-  transition: transform 0.2s ease, margin 0.2s ease;
+  transition: transform 0.2s ease;
+}
+
+/* Disable the generic .card:hover transform inside the hand — .hand__card owns it */
+.hand__card .card:hover:not(.card--disabled):not(.card--face-down) {
+  transform: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.12);
+  border-color: #c8c8c8;
 }
 
 .hand__card:hover {
   transform: translateY(-18px) scale(1.06);
   z-index: 10;
-  margin-left: 6px !important;
-  margin-right: 6px;
 }
 
 .hand__card--drawn {
@@ -1564,8 +1569,6 @@
 
   .hand__card:hover {
     transform: translateY(-12px) scale(1.04);
-    margin-left: 4px !important;
-    margin-right: 4px;
   }
 
   /* Turn controls */
