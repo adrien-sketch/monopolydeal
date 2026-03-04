@@ -1,5 +1,6 @@
 import type { Card as CardType, PropertyColor } from '../game/types'
 import { COLOR_NAMES, RENT_TABLE, SET_SIZES } from '../game/constants'
+import { cssColorVar } from '../game/utils'
 import '../styles/cards.css'
 
 interface CardProps {
@@ -12,11 +13,6 @@ interface CardProps {
   disabledReason?: string
   onClick?: () => void
   displayColor?: PropertyColor
-}
-
-function cssColorVar(color: PropertyColor): string {
-  const map: Record<string, string> = { lightBlue: 'light-blue', darkBlue: 'dark-blue' }
-  return map[color] || color
 }
 
 const ACTION_DESCRIPTIONS: Record<string, string> = {
