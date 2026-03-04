@@ -4,6 +4,7 @@ import type { Card as CardType, PropertyColor, PlayerState, GameState } from '..
 import { PROPERTY_COLORS } from '../game/types'
 import { Card } from './Card'
 import { PlayerArea } from './PlayerArea'
+import { BotSetsPanel } from './BotSetsPanel'
 import { ActionLog } from './ActionLog'
 import { PaymentModal } from './PaymentModal'
 import { PropertyPickerModal } from './PropertyPickerModal'
@@ -46,6 +47,50 @@ function getAllPropIds(player: PlayerState): Set<string> {
   return ids
 }
 
+function createFlyingCard(
+  fromRect: DOMRect,
+  toRect: DOMRect,
+  faceDown: boolean,
+  delay: number,
+) {
+  const el = document.createElement('div')
+  const sx = fromRect.left + fromRect.width / 2 - 27
+  const sy = fromRect.top + fromRect.height / 2 - 38
+  const ex = toRect.left + toRect.width / 2 - 27
+  const ey = toRect.top + toRect.height / 2 - 38
+  el.className = `flying-card ${faceDown ? 'flying-card--back' : 'flying-card--property'}`
+  el.style.left = `${sx}px`
+  el.style.top = `${sy}px`
+  document.body.appendChild(el)
+  const dx = ex - sx
+  const dy = ey - sy
+  const anim = el.animate(
+    [
+      { transform: 'scale(1) rotate(0deg)', opacity: 1 },
+      { transform: `translate(${dx}px, ${dy}px) scale(0.85)`, opacity: 0.6, offset: 0.85 },
+      { transform: `translate(${dx}px, ${dy}px) scale(0.7)`, opacity: 0 },
+    ],
+    {
+      duration: 380,
+      delay,
+      easing: 'cubic-bezier(0.22, 0.68, 0.35, 1.0)',
+      fill: 'forwards' as FillMode,
+    },
+  )
+  anim.onfinish = () => el.remove()
+}
+
+function launchFlyingCards(fromSelector: string, toSelector: string, count: number, faceDown: boolean) {
+  const fromEl = document.querySelector(fromSelector)
+  const toEl = document.querySelector(toSelector)
+  if (!fromEl || !toEl) return
+  const from = fromEl.getBoundingClientRect()
+  const to = toEl.getBoundingClientRect()
+  for (let i = 0; i < count; i++) {
+    createFlyingCard(from, to, faceDown, i * 120)
+  }
+}
+
 export function GameBoard({ onGameOver }: { onGameOver: (won: boolean, finalState: GameState) => void }) {
   const { state, dispatch } = useGame()
   const botBusy = useRef(false)
@@ -60,6 +105,8 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean, finalStat
   const prevHandIdsRef = useRef<Set<string>>(new Set(state.players.human.hand.map(c => c.id)))
   const [transferredCardIds, setTransferredCardIds] = useState<Set<string>>(new Set())
   const prevHumanPropIdsRef = useRef<Set<string>>(getAllPropIds(state.players.human))
+  const prevBotPropIdsRef = useRef<Set<string>>(getAllPropIds(state.players.bot))
+  const prevBotHandIdsRef = useRef<Set<string>>(new Set(state.players.bot.hand.map(c => c.id)))
 
   // Detect newly drawn cards and trigger animation
   useEffect(() => {
@@ -70,8 +117,9 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean, finalStat
     }
     prevHandIdsRef.current = currentIds
     if (newIds.size > 0) {
+      launchFlyingCards('.draw-pile', '.hand', newIds.size, true)
       setDrawnCardIds(newIds)
-      const t = setTimeout(() => setDrawnCardIds(new Set()), 500)
+      const t = setTimeout(() => setDrawnCardIds(new Set()), 700)
       return () => clearTimeout(t)
     }
   }, [state.players.human.hand])
@@ -88,11 +136,28 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean, finalStat
     }
     prevHumanPropIdsRef.current = currentPropIds
     if (newTransfers.size > 0) {
+      launchFlyingCards('.bot-panel', '.player-area', newTransfers.size, false)
       setTransferredCardIds(newTransfers)
-      const t = setTimeout(() => setTransferredCardIds(new Set()), 600)
+      const t = setTimeout(() => setTransferredCardIds(new Set()), 750)
       return () => clearTimeout(t)
     }
   }, [state.players.human.properties])
+
+  // Detect properties moving from human to bot (debt payment, forced deal, steal by bot)
+  useEffect(() => {
+    const currentBotPropIds = getAllPropIds(state.players.bot)
+    const transferred: string[] = []
+    for (const id of currentBotPropIds) {
+      if (!prevBotPropIdsRef.current.has(id) && !prevBotHandIdsRef.current.has(id)) {
+        transferred.push(id)
+      }
+    }
+    prevBotPropIdsRef.current = currentBotPropIds
+    prevBotHandIdsRef.current = new Set(state.players.bot.hand.map(c => c.id))
+    if (transferred.length > 0) {
+      launchFlyingCards('.player-area', '.bot-panel', transferred.length, false)
+    }
+  }, [state.players.bot])
 
   // Check for game over
   useEffect(() => {
@@ -360,22 +425,7 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean, finalStat
     <div className="game-board">
       <HelpButton />
       {/* Opponent area */}
-      <div className="opponent-area">
-        <div className="opponent-area__info">
-          <strong className="opponent-area__name">
-            Monobot ({state.difficulty === 'beginner' ? 'Débutant' : state.difficulty === 'intermediate' ? 'Intermédiaire' : 'Expert'})
-          </strong>
-          <div className="opponent-area__hand-summary">
-            <Card
-              card={{ id: 'hidden-stack', type: 'money', name: '', bankValue: 0 }}
-              faceDown
-              small
-            />
-            <span className="opponent-area__count">{state.players.bot.hand.length} cartes</span>
-          </div>
-        </div>
-        <PlayerArea player={state.players.bot} />
-      </div>
+      <BotSetsPanel player={state.players.bot} difficulty={state.difficulty} />
 
       {/* Middle area */}
       <div className="middle-area">
