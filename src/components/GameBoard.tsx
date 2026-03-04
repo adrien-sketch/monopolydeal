@@ -4,6 +4,7 @@ import type { Card as CardType, PropertyColor, PlayerState, GameState } from '..
 import { PROPERTY_COLORS } from '../game/types'
 import { Card } from './Card'
 import { PlayerArea } from './PlayerArea'
+import { BotSetsPanel } from './BotSetsPanel'
 import { ActionLog } from './ActionLog'
 import { PaymentModal } from './PaymentModal'
 import { PropertyPickerModal } from './PropertyPickerModal'
@@ -360,22 +361,7 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean, finalStat
     <div className="game-board">
       <HelpButton />
       {/* Opponent area */}
-      <div className="opponent-area">
-        <div className="opponent-area__info">
-          <strong className="opponent-area__name">
-            Monobot ({state.difficulty === 'beginner' ? 'Débutant' : state.difficulty === 'intermediate' ? 'Intermédiaire' : 'Expert'})
-          </strong>
-          <div className="opponent-area__hand-summary">
-            <Card
-              card={{ id: 'hidden-stack', type: 'money', name: '', bankValue: 0 }}
-              faceDown
-              small
-            />
-            <span className="opponent-area__count">{state.players.bot.hand.length} cartes</span>
-          </div>
-        </div>
-        <PlayerArea player={state.players.bot} />
-      </div>
+      <BotSetsPanel player={state.players.bot} difficulty={state.difficulty} />
 
       {/* Middle area */}
       <div className="middle-area">

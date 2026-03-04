@@ -10,22 +10,18 @@
   overflow: hidden;
 }
 
-/* ===== Opponent Area (top) ===== */
-.opponent-area {
-  display: flex;
-  gap: var(--gap-md);
-  align-items: flex-start;
-  padding: 8px 10px;
+/* ===== Bot Panel (opponent area, top) ===== */
+.bot-panel {
+  flex-shrink: 0;
   background: var(--glass-bg);
   border-radius: 12px;
   border: 1px solid var(--glass-border);
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
   position: relative;
   overflow: hidden;
-  flex-shrink: 0;
 }
 
-.opponent-area::before {
+.bot-panel::before {
   content: '';
   position: absolute;
   top: 0;
@@ -36,30 +32,228 @@
   border-radius: 3px 3px 0 0;
 }
 
-.opponent-area__info {
+/* Header — clickable summary bar */
+.bot-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s;
+}
+
+.bot-panel__header:hover {
+  background: rgba(227, 24, 55, 0.04);
+}
+
+.bot-panel__header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.bot-panel__name {
+  font-family: 'Fredoka One', sans-serif;
+  color: #E31837;
+  font-size: 0.9rem;
+  font-weight: 400;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.bot-panel__difficulty {
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.bot-panel__stats {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.bot-panel__stat {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: rgba(0, 0, 0, 0.04);
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+
+.bot-panel__stat--danger {
+  background: rgba(227, 24, 55, 0.1);
+  color: #E31837;
+  font-weight: 700;
+}
+
+.bot-panel__stat-icon {
+  font-size: 0.7rem;
+}
+
+.bot-panel__toggle {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  transition: transform 0.25s ease;
+  padding: 4px;
+}
+
+.bot-panel__toggle--open {
+  transform: rotate(180deg);
+}
+
+/* Body — expandable sets + bank */
+.bot-panel__body {
+  display: flex;
+  gap: 10px;
+  padding: 0 12px 10px;
+  align-items: flex-start;
+  animation: botPanelSlideIn 0.2s ease-out;
+}
+
+@keyframes botPanelSlideIn {
+  from { opacity: 0; max-height: 0; }
+  to { opacity: 1; max-height: 500px; }
+}
+
+.bot-panel__sets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  flex: 1;
+}
+
+.bot-panel__empty {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  padding: 6px;
+  font-style: italic;
+}
+
+.bot-panel__bank {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 4px;
+  padding: 8px 12px;
+  min-width: 80px;
+  background: linear-gradient(135deg, rgba(255, 193, 7, 0.08), rgba(245, 124, 0, 0.06));
+  border-radius: 10px;
+  border: 1.5px solid rgba(255, 193, 7, 0.25);
+  box-shadow: 0 2px 8px rgba(255, 193, 7, 0.08);
 }
 
-.opponent-area__name {
-  font-family: 'Fredoka One', sans-serif;
-  color: #E31837;
-  font-size: 0.85rem;
-  font-weight: 400;
-}
-
-.opponent-area__count {
-  font-size: 0.7rem;
-  color: var(--text-muted);
-}
-
-.opponent-area__hand-summary {
+/* Individual bot set — bigger and more readable */
+.bot-set {
   display: flex;
   flex-direction: column;
+  gap: 2px;
+  padding: 4px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.03);
+  border: 1.5px solid rgba(0, 0, 0, 0.06);
+  min-width: 68px;
+  transition: all 0.25s ease;
+}
+
+.bot-set:hover {
+  background: rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.bot-set--complete {
+  border: 2px solid var(--accent-gold);
+  background: rgba(255, 193, 7, 0.1);
+  box-shadow: 0 0 16px rgba(255, 193, 7, 0.2);
+  animation: botSetComplete 0.5s ease-out;
+}
+
+@keyframes botSetComplete {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+
+.bot-set--complete:hover {
+  box-shadow: 0 0 20px rgba(255, 193, 7, 0.3);
+}
+
+.bot-set__label {
+  display: flex;
   align-items: center;
-  gap: 3px;
+  justify-content: space-between;
+  gap: 4px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.bot-set__count {
+  font-size: 0.6rem;
+  font-weight: 600;
+  opacity: 0.85;
+  background: rgba(0, 0, 0, 0.15);
+  padding: 0 4px;
+  border-radius: 4px;
+}
+
+.bot-set__progress {
+  height: 3px;
+  background: rgba(0, 0, 0, 0.08);
+  border-radius: 2px;
+  margin: 1px 3px;
+  overflow: hidden;
+}
+
+.bot-set__progress-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.4s ease;
+  opacity: 0.75;
+}
+
+.bot-set--complete .bot-set__progress-fill {
+  opacity: 1;
+  box-shadow: 0 0 4px rgba(255, 193, 7, 0.5);
+}
+
+.bot-set__cards {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Less overlap than before (-48px vs -58px) so cards are more visible */
+.bot-set__cards > *:not(:first-child) {
+  margin-top: -44px;
+}
+
+.bot-set__card-wrapper {
+  position: relative;
+  transition: transform 0.15s ease;
+}
+
+.bot-set__badge {
+  font-size: 0.6rem;
+  text-align: center;
+  color: var(--text-muted);
 }
 
 /* ===== Middle Area ===== */
@@ -1309,14 +1503,40 @@
     font-size: 0.7rem;
   }
 
-  /* Opponent area compact */
-  .opponent-area {
+  /* Bot panel compact */
+  .bot-panel__header {
     padding: 6px 8px;
-    gap: 4px;
   }
 
-  .opponent-area__name {
-    font-size: 0.75rem;
+  .bot-panel__name {
+    font-size: 0.8rem;
+  }
+
+  .bot-panel__stats {
+    gap: 6px;
+  }
+
+  .bot-panel__stat {
+    font-size: 0.68rem;
+    padding: 2px 6px;
+  }
+
+  .bot-panel__body {
+    padding: 0 8px 8px;
+    gap: 6px;
+  }
+
+  .bot-set {
+    min-width: 60px;
+  }
+
+  .bot-set__label {
+    font-size: 0.55rem;
+    padding: 2px 5px;
+  }
+
+  .bot-set__cards > *:not(:first-child) {
+    margin-top: -48px;
   }
 
   /* Player area compact */
@@ -1437,8 +1657,13 @@
     --card-height: 96px;
   }
 
-  .opponent-area__hand .card {
-    margin-left: -28px;
+  .bot-panel__stats {
+    gap: 4px;
+  }
+
+  .bot-panel__stat {
+    font-size: 0.62rem;
+    padding: 1px 5px;
   }
 
   .turn-controls {
