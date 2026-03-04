@@ -32,19 +32,37 @@ export function ActionLog({ entries }: { entries: LogEntry[] }) {
   }, [entries.length])
 
   return (
-    <div className="action-log" ref={ref}>
-      <div className="action-log__title">Historique</div>
-      {entries.length === 0 && (
-        <div style={{ color: '#aaa', fontSize: '0.7rem' }}>Aucune action</div>
-      )}
-      {entries.map((entry, i) => (
-        <div key={i} className={`action-log__entry action-log__entry--${entry.player}`}>
-          <span className="action-log__icon">{getLogIcon(entry.message)}</span>
-          <span>
-            <strong>{entry.player === 'human' ? 'Vous' : 'Monobot'}</strong> {entry.message}
-          </span>
-        </div>
-      ))}
+    <div className="action-log">
+      <div className="action-log__header">
+        <span className="action-log__header-icon">📜</span>
+        <span className="action-log__title">Historique</span>
+        {entries.length > 0 && (
+          <span className="action-log__badge">{entries.length}</span>
+        )}
+      </div>
+      <div className="action-log__feed" ref={ref}>
+        {entries.length === 0 && (
+          <div className="action-log__empty">
+            <span className="action-log__empty-icon">💤</span>
+            <span>En attente d'actions…</span>
+          </div>
+        )}
+        {entries.map((entry, i) => (
+          <div
+            key={i}
+            className={`action-log__bubble action-log__bubble--${entry.player}`}
+            style={{ animationDelay: `${Math.min(i * 0.03, 0.3)}s` }}
+          >
+            <span className="action-log__icon">{getLogIcon(entry.message)}</span>
+            <div className="action-log__content">
+              <span className="action-log__author">
+                {entry.player === 'human' ? 'Vous' : 'Monobot'}
+              </span>
+              <span className="action-log__message">{entry.message}</span>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }

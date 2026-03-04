@@ -1,5 +1,6 @@
 import type { PropertyColor } from '../game/types'
 import { COLOR_NAMES } from '../game/constants'
+import { cssColorVar } from '../game/utils'
 
 interface ColorPickerModalProps {
   colors: PropertyColor[]
@@ -33,10 +34,3 @@ export function ColorPickerModal({ colors, title, onSelect }: ColorPickerModalPr
   )
 }
 
-function cssColorVar(color: PropertyColor): string {
-  const map: Record<string, string> = {
-    lightBlue: 'light-blue',
-    darkBlue: 'dark-blue',
-  }
-  return map[color] || color
-}

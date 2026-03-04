@@ -3,8 +3,7 @@ import { useGame } from '../state/context'
 import type { Card as CardType, PropertyColor, PlayerState, GameState } from '../game/types'
 import { PROPERTY_COLORS } from '../game/types'
 import { Card } from './Card'
-import { PlayerArea } from './PlayerArea'
-import { BotSetsPanel } from './BotSetsPanel'
+import { PlayerPanel } from './PlayerPanel'
 import { ActionLog } from './ActionLog'
 import { PaymentModal } from './PaymentModal'
 import { PropertyPickerModal } from './PropertyPickerModal'
@@ -143,7 +142,7 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean, finalStat
     }
     prevHumanPropIdsRef.current = currentPropIds
     if (newTransfers.size > 0) {
-      launchFlyingCards('.bot-panel', '.player-area', newTransfers.size, false)
+      launchFlyingCards('[data-player="bot"]', '[data-player="human"]', newTransfers.size, false)
       setTransferredCardIds(newTransfers)
       const t = setTimeout(() => setTransferredCardIds(new Set()), 750)
       return () => clearTimeout(t)
@@ -162,7 +161,7 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean, finalStat
     prevBotPropIdsRef.current = currentBotPropIds
     prevBotHandIdsRef.current = new Set(state.players.bot.hand.map(c => c.id))
     if (transferred.length > 0) {
-      launchFlyingCards('.player-area', '.bot-panel', transferred.length, false)
+      launchFlyingCards('[data-player="human"]', '[data-player="bot"]', transferred.length, false)
     }
   }, [state.players.bot])
 
@@ -432,59 +431,58 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean, finalStat
     <div className="game-board">
       <HelpButton />
       {/* Opponent area */}
-      <BotSetsPanel player={state.players.bot} difficulty={state.difficulty} />
+      <PlayerPanel
+        player={state.players.bot}
+        playerId="bot"
+        playerName="Monobot"
+        difficulty={state.difficulty}
+        accentColor="red"
+      />
 
       {/* Middle area */}
       <div className="middle-area">
         <div className="middle-area__center" style={{ flex: 1 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <div className="draw-pile">
-              <Card
-                card={{ id: 'draw', type: 'money', name: '', bankValue: 0 }}
-                faceDown
-                small
-              />
-              <span className="draw-pile__count">{state.drawPile.length}</span>
-            </div>
-            {state.discardPile.length > 0 && (
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
-                <Card card={state.discardPile[state.discardPile.length - 1]} small />
-                <span className="discard-pile__label">Défausse</span>
-              </div>
-            )}
-          </div>
-
-          {/* Turn info */}
-          <div className={`turn-controls ${isHumanTurn ? 'turn-controls--human' : 'turn-controls--bot'}`}>
-            <span className="turn-controls__info">
-              Tour {state.turnNumber} — {isHumanTurn ? 'Votre tour' : 'Tour de Monobot'}
-              {state.turnPhase === 'play' && ` — ${state.cardsPlayedThisTurn}/3 cartes jouées`}
-            </span>
-            {isHumanTurn && state.turnPhase === 'draw' && (
-              <button className="turn-controls__btn" onClick={() => dispatch({ type: 'DRAW_CARDS' })}>
-                Piocher
-              </button>
-            )}
-            {isHumanTurn && state.turnPhase === 'play' && !state.pendingAction && (
-              <button className="turn-controls__btn" onClick={() => {
-                if (state.cardsPlayedThisTurn < 2 && state.players.human.hand.length > 0) {
-                  setShowEndTurnConfirm(true)
-                } else {
-                  dispatch({ type: 'END_TURN' })
-                }
-              }}>
-                Fin du tour
-              </button>
-            )}
-          </div>
+          {/* Turn CTA */}
+          {isHumanTurn && state.turnPhase === 'draw' && (
+            <button className="turn-cta" onClick={() => dispatch({ type: 'DRAW_CARDS' })}>
+              🃏 Piocher
+            </button>
+          )}
+          {isHumanTurn && state.turnPhase === 'play' && !state.pendingAction && (
+            <button className="turn-cta turn-cta--end" onClick={() => {
+              if (state.cardsPlayedThisTurn < 2 && state.players.human.hand.length > 0) {
+                setShowEndTurnConfirm(true)
+              } else {
+                dispatch({ type: 'END_TURN' })
+              }
+            }}>
+              Fin du tour
+            </button>
+          )}
+          {!isHumanTurn && (
+            <span className="turn-cta turn-cta--waiting">⏳ Tour de Monobot…</span>
+          )}
         </div>
         <ActionLog entries={state.actionLog} />
       </div>
 
       {/* Player area */}
-      <div className="player-area">
-        <PlayerArea player={state.players.human} transferredCardIds={transferredCardIds} />
-        <div className="hand">
+      <PlayerPanel
+        player={state.players.human}
+        playerId="human"
+        playerName="Vous"
+        accentColor="green"
+        transferredCardIds={transferredCardIds}
+      />
+
+      <div className="turn-info">
+        <span className="turn-info__text">
+          Tour {state.turnNumber} — {isHumanTurn ? 'Votre tour' : 'Tour de Monobot'}
+          {state.turnPhase === 'play' && ` — ${state.cardsPlayedThisTurn}/3 cartes jouées`}
+        </span>
+      </div>
+
+      <div className="hand">
           {state.players.human.hand.map((card, i) => {
             const count = state.players.human.hand.length
             const ml = isMobile ? 4 : (count <= 5 ? 6 : count <= 8 ? -6 : -14)
@@ -520,7 +518,6 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean, finalStat
             )
           })}
         </div>
-      </div>
 
       {/* Modals */}
       {showPayment && state.pendingAction?.type === 'payDebt' && (
