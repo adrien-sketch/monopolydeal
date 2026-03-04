@@ -102,11 +102,18 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean, finalStat
   const [previewCard, setPreviewCard] = useState<CardType | null>(null)
   const isMobile = useIsMobile()
   const [drawnCardIds, setDrawnCardIds] = useState<Set<string>>(new Set())
+  const [initialDeal, setInitialDeal] = useState(true)
   const prevHandIdsRef = useRef<Set<string>>(new Set(state.players.human.hand.map(c => c.id)))
   const [transferredCardIds, setTransferredCardIds] = useState<Set<string>>(new Set())
   const prevHumanPropIdsRef = useRef<Set<string>>(getAllPropIds(state.players.human))
   const prevBotPropIdsRef = useRef<Set<string>>(getAllPropIds(state.players.bot))
   const prevBotHandIdsRef = useRef<Set<string>>(new Set(state.players.bot.hand.map(c => c.id)))
+
+  // Turn off initial deal animation after it completes
+  useEffect(() => {
+    const t = setTimeout(() => setInitialDeal(false), 700)
+    return () => clearTimeout(t)
+  }, [])
 
   // Detect newly drawn cards and trigger animation
   useEffect(() => {
@@ -484,7 +491,7 @@ export function GameBoard({ onGameOver }: { onGameOver: (won: boolean, finalStat
             return (
               <div
                 key={card.id}
-                className={`hand__card${drawnCardIds.has(card.id) ? ' hand__card--drawn' : ''}`}
+                className={`hand__card${drawnCardIds.has(card.id) ? ' hand__card--drawn' : ''}${initialDeal ? ' hand__card--deal' : ''}`}
                 style={{ marginLeft: i === 0 ? 0 : ml }}
                 onClick={isMobile ? () => setPreviewCard(card) : undefined}
               >
