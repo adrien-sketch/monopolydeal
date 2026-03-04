@@ -240,9 +240,9 @@
   flex-direction: column;
 }
 
-/* Less overlap than before (-48px vs -58px) so cards are more visible */
+/* Reduced overlap so cards are more visible */
 .bot-set__cards > *:not(:first-child) {
-  margin-top: -44px;
+  margin-top: -38px;
 }
 
 .bot-set__card-wrapper {
@@ -348,18 +348,18 @@
 }
 
 .hand__card--drawn {
-  animation: cardDrawIn 0.35s cubic-bezier(0.22, 0.68, 0.35, 1.0) 0.3s both;
+  animation: cardDrawIn 0.35s cubic-bezier(0.22, 0.68, 0.35, 1.0) 0.28s both;
 }
 
 @keyframes cardDrawIn {
   0% {
-    opacity: 0;
-    transform: scale(0.7);
-    filter: brightness(1.3);
+    opacity: 0.3;
+    transform: scale(0.85);
+    filter: brightness(1.4);
   }
-  60% {
+  50% {
     opacity: 1;
-    filter: brightness(1.1);
+    filter: brightness(1.15);
   }
   100% {
     opacity: 1;
@@ -398,6 +398,15 @@
 .property-set:hover {
   background: rgba(0, 0, 0, 0.05);
   border-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Disable card hover transform inside property sets — cards are small and stacked */
+.property-set .card:hover,
+.bot-set .card:hover {
+  transform: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.12);
+  border-color: #c8c8c8;
+  z-index: auto;
 }
 
 .property-set__label {
@@ -439,7 +448,7 @@
 }
 
 .property-set__cards > *:not(:first-child) {
-  margin-top: -58px;
+  margin-top: -38px;
 }
 
 .property-set__complete {
@@ -456,13 +465,13 @@
 
 /* ===== Property Transfer Animation ===== */
 .property-card--transferred {
-  animation: cardTransferIn 0.4s cubic-bezier(0.22, 0.68, 0.35, 1.0) 0.3s both;
+  animation: cardTransferIn 0.4s cubic-bezier(0.22, 0.68, 0.35, 1.0) 0.28s both;
 }
 
 @keyframes cardTransferIn {
   0% {
-    opacity: 0;
-    transform: scale(0.6);
+    opacity: 0.3;
+    transform: scale(0.8);
     filter: drop-shadow(0 0 12px rgba(255, 193, 7, 0.6));
   }
   50% {
@@ -1559,7 +1568,7 @@
   }
 
   .bot-set__cards > *:not(:first-child) {
-    margin-top: -48px;
+    margin-top: -42px;
   }
 
   /* Player area compact */
