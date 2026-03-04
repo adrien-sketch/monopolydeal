@@ -12,7 +12,9 @@
 
 /* ===== Bot Panel (opponent area, top) ===== */
 .bot-panel {
-  flex-shrink: 0;
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: hidden;
   background: var(--glass-bg);
   border-radius: 12px;
   border: 1px solid var(--glass-border);
@@ -145,9 +147,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  padding: 8px 12px;
-  min-width: 80px;
+  gap: 6px;
+  padding: 10px 16px;
+  min-width: 90px;
   background: linear-gradient(135deg, rgba(255, 193, 7, 0.08), rgba(245, 124, 0, 0.06));
   border-radius: 10px;
   border: 1.5px solid rgba(255, 193, 7, 0.25);
@@ -261,7 +263,7 @@
   display: flex;
   gap: var(--gap-md);
   align-items: stretch;
-  flex: 1;
+  flex: 0 1 auto;
   min-height: 0;
   overflow: hidden;
 }
@@ -271,8 +273,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 10px 16px;
+  gap: 6px;
+  padding: 6px 12px;
   flex: 1;
   background: rgba(255, 255, 255, 0.35);
   border-radius: 12px;
@@ -299,7 +301,8 @@
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
   position: relative;
   overflow: visible;
-  flex-shrink: 0;
+  flex: 1.5 1 0;
+  min-height: 0;
 }
 
 .player-area::before {
@@ -481,9 +484,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  padding: 8px 12px;
-  min-width: 80px;
+  gap: 6px;
+  padding: 10px 16px;
+  min-width: 90px;
   background: linear-gradient(135deg, rgba(255, 193, 7, 0.08), rgba(245, 124, 0, 0.06));
   border-radius: 10px;
   border: 1.5px solid rgba(255, 193, 7, 0.25);
@@ -492,7 +495,7 @@
 
 .bank__label {
   font-family: 'Fredoka One', sans-serif;
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   color: #B8860B;
   font-weight: 400;
   text-transform: uppercase;
@@ -502,7 +505,7 @@
 .bank__total {
   font-family: 'Fredoka One', sans-serif;
   font-weight: 400;
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   background: linear-gradient(135deg, #FFC107, #F57C00);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -1497,8 +1500,8 @@
 /* ===== Responsive Mobile ===== */
 @media (max-width: 768px) {
   :root {
-    --card-width: 72px;
-    --card-height: 102px;
+    --card-width: 84px;
+    --card-height: 119px;
   }
 
   .game-board {
@@ -1674,8 +1677,8 @@
 
 @media (max-width: 480px) {
   :root {
-    --card-width: 68px;
-    --card-height: 96px;
+    --card-width: 76px;
+    --card-height: 107px;
   }
 
   .bot-panel__stats {
